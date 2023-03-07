@@ -11,74 +11,88 @@ background-color: #000;
 height: 100vh;
 max-height: 100vh;
 width: 100vw;
-max-width: 412px;
-position: relative;
-padding: 25px 25px;
+background-color: green;
 `
 
 export const Title = styled.h1`
-font-family: Tenor Sans;
+font-family: passion one;
 font-style: normal;
-font-weight: 400;
-font-size: 40px;
+font-weight: 700;
+font-size: 76px;
 color: #fff;
+height: 175px;
+padding-top: 20px;
+padding-bottom: 20px;
+width: 100%;
+background-color: #000;
+text-align: center;
+justify-content: center;
+
+p{
+    font-size: 23px;
+    line-height: 34px;
+}
 `
 export const FormContainer = styled.div`
 display: flex;
-margin: 30px 0 25px;
 flex-direction: column;
 align-items: center;
-width: 326px;
-height:446px;
+width: 100%;
+height:100%;
+background-color: #333333;
+padding-top: 40px;
 
 input{
-    font-family: Tenor Sans;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: oswald,sans-serif;
     font-style: normal;
-    font-weight: 400;
-    font-size: 20px;
-    line-height: 23px;
-    color: #000000;
-    width: 326px;
-    height: 58px;
+    font-weight: 700;
+    font-size: 22px;
+    line-height: 32px;
+    color: #000;
+    width: 330px;
+    height: 55px;
     margin-bottom: 13px;
-    padding: 10px;
+    padding: 15px;
     border: none;
-    border-radius: 5px;  
+    border-radius: 6px;  
     pointer-events: ${(props) => (props.disabled ? "none" : "all")};
     background-color: ${(props) => (props.disabled ? "#F2F2F2" : "#FFFFFF")};
     color: ${(props) => (props.disabled ? "#AFAFAF" : "#666666")};
 
     &::placeholder {
-        font-family: Tenor Sans;
+        font-family: oswald;
         font-style: normal;
-        font-weight: 400;
-        font-size: 20px;
-        line-height: 23px;
-        color: #000000;
+        font-weight: 700;
+        font-size: 22px;
+        line-height: 32px;
+        color: #9F9F9F;
     }
-    font-family: Tenor Sans;
+    font-family: oswald;
     font-style: normal;
-    font-weight: 400;
-    font-size: 20px;
-    line-height: 23px;
+    font-weight: 700;
+    font-size: 22px;
+    line-height: 32px;
     color: #000000;
 }
 button{
-    width: 326px;
-    height: 46px;
+    width: 330px;
+    height: 55px;
     display: flex;
     align-items: center;
     justify-content: center;
     border: none;
-    border-radius: 5px;
+    border-radius: 6px;
     cursor: pointer;
     pointer-events: ${(props) => (props.disabled ? "none" : "all")};
     opacity: ${(props) => (props.disabled ? 0.7 : 1)};
-    font-size: 20px;
-    line-height: 26px;
+    font-size: 22px;
+    line-height: 32px;
     text-align: center;
-    background: #fff;
-    margin-top: 40px;
+    background: #1877F2;
+    margin-top: 5px;
     &:hover {
         background: #E8EBEF;
     }
@@ -88,12 +102,12 @@ button{
     &:focus {
         outline: none;
     }
-    font-family: Tenor Sans;
+    font-family: oswald;
     font-style: normal;
     font-weight: 400;
-    font-size: 20px;
-    line-height: 23px;
-    color: #000;
+    font-size: 22px;
+    line-height: 32px;
+    color: #fff;
 }
 `
 export const TextContainer = styled.div`
@@ -102,14 +116,12 @@ justify-content: center;
 align-items: center;
 margin-top: 15px;
 h3{
-    font-size: 14px;
-    line-height: 17px;
-    text-decoration: none;
+    font-size: 17px;
+    line-height: 20px;
     color: #ffffff;
-    font-family: Tenor Sans;
+    font-family: lato;
     font-style: normal;
     font-weight: 400;
-    font-size: 15px;
 }
 a{
         color: #fff;

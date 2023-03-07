@@ -17,7 +17,7 @@ export default function SignUpPage() {
         setForm({ ...form, [e.target.id]: e.target.value })
     }
 
-    function createAccount (e) {
+    function createAccount(e) {
         e.preventDefault();
 
         const body = {
@@ -26,7 +26,7 @@ export default function SignUpPage() {
             username: form.username,
             pictureUrl: form.pictureUrl
         }
-    
+
         apiAuth
             .signUp(body)
             .then((res) => {
@@ -42,7 +42,10 @@ export default function SignUpPage() {
         <SignUpContainer>
 
             <Title>
-                Linkr
+                linkr
+                <p>save, share and discover
+                    <br />
+                    the best links on the web</p>
             </Title>
 
             <FormContainer>
