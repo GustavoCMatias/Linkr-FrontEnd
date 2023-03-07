@@ -1,8 +1,6 @@
 import {SignInContainer, Title,  FormContainer, TextContainer} from './SignInPageCss.js';
 
 export default function SignInPage() {
-
-    
     return (
         <SignInContainer>
 
