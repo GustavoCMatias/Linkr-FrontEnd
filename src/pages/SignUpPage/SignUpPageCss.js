@@ -86,17 +86,14 @@ button{
     border: none;
     border-radius: 6px;
     cursor: pointer;
+    background-color: ${(props) => (props.disabled ? 'grey' : '#1877F2')};
     pointer-events: ${(props) => (props.disabled ? "none" : "all")};
-    opacity: ${(props) => (props.disabled ? 0.7 : 1)};
+    opacity: ${(props) => (props.disabled ? 0.5 : 1)};
     font-size: 22px;
     line-height: 32px;
     text-align: center;
-    background: #1877F2;
     margin-top: 5px;
     &:hover {
-        background: #E8EBEF;
-    }
-    s &:active {
         background: #E8EBEF;
     }
     &:focus {

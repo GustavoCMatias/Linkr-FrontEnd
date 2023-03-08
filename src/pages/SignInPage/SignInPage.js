@@ -10,9 +10,12 @@ export default function SignInPage() {
     //const { setUser } = useContext(UserContext);
 
     const [form, setForm] = useState({ email: "", password: "" });
+    const [disabled, setDisabled] = useState(false);
 
     function signIn(e) {
         e.preventDefault();
+        console.log('cliquei')
+        setDisabled(true);
 
         apiAuth
             .singIn(form)
@@ -23,6 +26,7 @@ export default function SignInPage() {
             })
             .catch((err) => {
                 console.log(err.response.data);
+                setDisabled(false);
             });
     }
 
@@ -38,7 +42,7 @@ export default function SignInPage() {
                     the best links on the web</p>
             </Title>
 
-            <FormContainer>
+            <FormContainer disabled={disabled}>
                 <form onSubmit={signIn}>
                     <input
                         id="email"
@@ -58,7 +62,7 @@ export default function SignInPage() {
                         onChange={handleForm}
                     />
 
-                    <button type="submit">Sign In</button>
+                    <button type="submit" >Sign In</button>
                 </form>
 
                 <TextContainer>

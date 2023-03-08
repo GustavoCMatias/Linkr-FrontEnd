@@ -2,14 +2,17 @@ import styled from "styled-components";
 
 export const SignInContainer = styled.div`
 display: flex;
-flex-direction: column;
+flex-direction: row;
 align-items: center;
 justify-content: center;
 background-color: #000;
 height: 100vh;
 max-height: 100vh;
 width: 100vw;
-background-color: green;
+@media screen and (max-width: 600px ){
+    display: block;
+    flex-direction: column;
+}
 `
 
 export const Title = styled.h1`
@@ -30,12 +33,19 @@ p{
     font-size: 23px;
     line-height: 34px;
 }
+
+@media screen and (max-width: 600px ){
+    display: block;
+    flex-direction: row;
+    background-color: black;
+}
 `
 export const FormContainer = styled.div`
 display: flex;
 flex-direction: column;
 align-items: center;
-width: 100%;
+justify-content: center;
+width: 550px;
 height:100%;
 background-color: #333333;
 padding-top: 40px;
@@ -52,6 +62,7 @@ input{
     color: #000;
     width: 330px;
     height: 55px;
+    margin: auto;
     margin-bottom: 13px;
     padding: 15px;
     border: none;
@@ -74,6 +85,7 @@ input{
     font-size: 22px;
     line-height: 32px;
     color: #000000;
+    
 }
 button{
     width: 330px;
@@ -84,17 +96,15 @@ button{
     border: none;
     border-radius: 6px;
     cursor: pointer;
+    background-color: ${(props) => (props.disabled ? 'grey' : '#1877F2')};
     pointer-events: ${(props) => (props.disabled ? "none" : "all")};
     opacity: ${(props) => (props.disabled ? 0.7 : 1)};
     font-size: 22px;
     line-height: 32px;
     text-align: center;
-    background: #1877F2;
+    margin: auto;
     margin-top: 5px;
     &:hover {
-        background: #E8EBEF;
-    }
-    s &:active {
         background: #E8EBEF;
     }
     &:focus {
@@ -106,6 +116,11 @@ button{
     font-size: 22px;
     line-height: 32px;
     color: #fff;
+}
+
+@media screen and (max-width: 600px ){
+    display: block;
+    width: 100%;
 }
 `
 export const TextContainer = styled.div`
