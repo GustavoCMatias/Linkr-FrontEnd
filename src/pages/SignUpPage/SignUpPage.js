@@ -31,7 +31,7 @@ export default function SignUpPage() {
             .signUp(body)
             .then((res) => {
                 console.log(res.data);
-                navigate('/sign-in');
+                navigate('/');
             })
             .catch((err) => {
                 console.log(err.response.data);
@@ -91,7 +91,7 @@ export default function SignUpPage() {
                 </form>
 
                 <TextContainer>
-                    <Link to='/sign-in'>
+                    <Link to='/'>
                         <h3>Switch back to log in</h3>
                     </Link>
                 </TextContainer>
