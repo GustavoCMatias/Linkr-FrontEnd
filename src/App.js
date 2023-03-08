@@ -8,7 +8,7 @@ export default function App() {
   return(
     <BrowserRouter> 
     <Routes>
-      <Route path="/sign-in" element={<SignInPage />  } />
+      <Route path="/" element={<SignInPage />  } />
       <Route path="/sign-up" element={<SignUpPage />} />
       
     </Routes>

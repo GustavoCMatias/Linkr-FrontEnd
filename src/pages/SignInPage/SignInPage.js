@@ -14,21 +14,21 @@ export default function SignInPage() {
     function signIn(e) {
         e.preventDefault();
 
-    apiAuth
-      .singIn(form)
-      .then((res) => {
-        console.log(res.data);
-        //setUser(res.data);
-        navigate("/");
-      })
-      .catch((err) => {
-        console.log(err.response.data);
-      });
+        apiAuth
+            .singIn(form)
+            .then((res) => {
+                console.log(res.data);
+                //setUser(res.data);
+                navigate("/timeline");
+            })
+            .catch((err) => {
+                console.log(err.response.data);
+            });
     }
 
     function handleForm(e) {
         setForm({ ...form, [e.target.id]: e.target.value });
-      }
+    }
     return (
         <SignInContainer>
             <Title>
@@ -41,6 +41,7 @@ export default function SignInPage() {
             <FormContainer>
                 <form onSubmit={signIn}>
                     <input
+                        id="email"
                         type="email"
                         name="email"
                         placeholder="email"
@@ -49,6 +50,7 @@ export default function SignInPage() {
                     />
 
                     <input
+                        id="password"
                         type="password"
                         name="password"
                         placeholder="password"
