@@ -8,6 +8,7 @@ export default function UserPage(props){
     const {id} = useParams();
     const [userName, setUserName] = useState('');
     const [searchName,setSearchName] = useState('');
+    const [searchResults,setSearchResults] = useState([]);
     const token = '';
 
     useEffect(() => {
@@ -23,11 +24,14 @@ export default function UserPage(props){
     
     return(
         <>
-            <NavBar>
+            <Navbar>
                 <SearchBarContainer>
                     <SearchBar type={'text'} value={searchName} onChange={(e)=>setSearchName(e.target.value)} placeholder={'Search for people'}></SearchBar>
+                    <SearchResultsContainer>
+
+                    </SearchResultsContainer>
                 </SearchBarContainer>
-            </NavBar>
+            </Navbar>
             <UserPageContainer>
                 <img/>
                 <p>{userProfile}'s posts</p>
@@ -43,6 +47,9 @@ const SearchBarContainer = styled.div`
     width: 563px;
     border-radius: 8px;
     background-color: #FFFFFF;
+    position:fixed;
+    top:0;
+    margin:auto;
 `
 
 const SearchBar = styled.input`
