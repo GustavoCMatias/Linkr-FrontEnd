@@ -26,6 +26,7 @@ export default function SignInPage() {
             })
             .catch((err) => {
                 console.log(err.response.data);
+                setDisabled(false);
             });
     }
 
@@ -41,7 +42,7 @@ export default function SignInPage() {
                     the best links on the web</p>
             </Title>
 
-            <FormContainer>
+            <FormContainer disabled={disabled}>
                 <form onSubmit={signIn}>
                     <input
                         id="email"
@@ -61,7 +62,7 @@ export default function SignInPage() {
                         onChange={handleForm}
                     />
 
-                    <button type="submit" disabled={disabled}>Sign In</button>
+                    <button type="submit" >Sign In</button>
                 </form>
 
                 <TextContainer>

@@ -5,6 +5,7 @@ import { useState } from 'react';
 
 export default function SignUpPage() {
     const navigate = useNavigate();
+    const [disabled, setDisabled] = useState(false);
 
     const [form, setForm] = useState({
         email: '',
@@ -19,6 +20,7 @@ export default function SignUpPage() {
 
     function createAccount(e) {
         e.preventDefault();
+        setDisabled(true);
 
         const body = {
             email: form.email,
@@ -35,6 +37,7 @@ export default function SignUpPage() {
             })
             .catch((err) => {
                 console.log(err.response.data);
+                setDisabled(false);
             });
     }
 
@@ -48,7 +51,7 @@ export default function SignUpPage() {
                     the best links on the web</p>
             </Title>
 
-            <FormContainer>
+            <FormContainer disabled={disabled}>
                 <form onSubmit={createAccount}>
                     <input
                         id='email'
@@ -87,7 +90,7 @@ export default function SignUpPage() {
                     />
 
 
-                    <button type='submit' >Sign Up</button>
+                    <button type='submit'>Sign Up</button>
                 </form>
 
                 <TextContainer>
