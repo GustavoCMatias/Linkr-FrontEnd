@@ -30,7 +30,7 @@ const GlobalStyle = createGlobalStyle`
         line-height: 1;
         width: 100%;
         height: 100%;
-        background-color: lightgray;
+        background-color: #333333;
         font-family: 'Raleway', sans-serif;
         display: flex;
         align-items: center;
