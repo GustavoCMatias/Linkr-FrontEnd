@@ -31,7 +31,7 @@ export default function SignUpPage() {
             .signUp(body)
             .then((res) => {
                 console.log(res.data);
-                navigate('/');
+                navigate('/sign-in');
             })
             .catch((err) => {
                 console.log(err.response.data);
