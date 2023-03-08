@@ -1,19 +1,35 @@
 import styled from "styled-components"
-import { AiOutlineDown } from "react-icons/ai";
+import { AiOutlineDown,AiOutlineSearch } from "react-icons/ai";
 import { useState } from "react";
+import { DebounceInput } from "react-debounce-input";
+import axios from "axios";
 
-export default function Navbar({ userProfilePic }) {
+export default function Navbar() {
+    const userProfilePic  = ''
     const [searchName, setSearchName] = useState('');
     const [searchResults, setSearchResults] = useState([]);
-    function onNameSearchChange(e){
+    const token = '';
+    function onNameSearchChange(e) {
         setSearchName(e.target.value);
-       
+        axios.get(`${process.env.REACT_APP_API_URL}/users/:${searchName}`)
+        .then(res=>{
+            console.log(res.data)
+            setSearchResults(res.data);
+        })
+        .catch(err=>console.log(err));
     }
     return (
         <NavbarContainer>
             <h1>linkr</h1>
             <SearchBarContainer>
-                <SearchBar type={'text'} value={searchName} onChange={onNameSearchChange} placeholder={'Search for people'}></SearchBar>
+                <DebounceInput
+                    element={SearchBar}
+                    minLength={3}
+                    debounceTimeout={300}
+                    value={searchName}
+                    onChange={onNameSearchChange}
+                    placeholder={'Search for people'}>
+                </DebounceInput>
                 {searchResults.length > 0 && <SearchResultsContainer>
                     <SearchResult></SearchResult>
                     {searchResults.map(searchElement => {
@@ -91,17 +107,17 @@ const SearchBar = styled.input`
     display:flex;
     z-index:2;
     &:focus-visible{
-    outline: none;
-    }
-    ::placeholder{
-        color: #C6C6C6;
-        height: 23px;
-        width: 146px;
-        font-family: Lato;
-        font-size: 19px;
-        font-weight: 400;
-        line-height: 23px;
-    }
+            outline: none;
+        }
+        ::placeholder{
+            color: #C6C6C6;
+            height: 23px;
+            width: 146px;
+            font-family: Lato;
+            font-size: 19px;
+            font-weight: 400;
+            line-height: 23px;
+        }
 `
 
 const SearchResultsContainer = styled.div`

@@ -5,7 +5,7 @@ import styled from "styled-components"
 import Navbar from "../../components/Navbar"
 
 export default function UserPage(props){
-    const user = props;
+    const user = props|'';
     const {id:userId} = useParams();
     const [userName, setUserName] = useState('');
     const [userPicture, setUserPicture] = useState('');
