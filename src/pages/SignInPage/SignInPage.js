@@ -19,7 +19,7 @@ export default function SignInPage() {
       .then((res) => {
         console.log(res.data);
         //setUser(res.data);
-        navigate("/home");
+        navigate("/");
       })
       .catch((err) => {
         console.log(err.response.data);
