@@ -2,13 +2,13 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components"
+import Navbar from "../../components/Navbar"
 
 export default function UserPage(props){
-    const{userProfile,userPicture} = props;
-    const {id} = useParams();
+    const user = props;
+    const {id:userId} = useParams();
     const [userName, setUserName] = useState('');
-    const [searchName,setSearchName] = useState('');
-    const [searchResults,setSearchResults] = useState([]);
+    const [userPicture, setUserPicture] = useState('');
     const token = '';
 
     useEffect(() => {
@@ -17,49 +17,29 @@ export default function UserPage(props){
         }
         axios.get(`${process.env.REACT_APP_API_URL}/user/${userId}`,config)
         .then(res=>{
-            setUserName = res.data;
+            setUserName(res.data.name);
+            setUserPicture(res.data.picture);
         })
         .catch(err=>console.log(err));
     }, [])
     
     return(
         <>
-            <Navbar>
-                <SearchBarContainer>
-                    <SearchBar type={'text'} value={searchName} onChange={(e)=>setSearchName(e.target.value)} placeholder={'Search for people'}></SearchBar>
-                    <SearchResultsContainer>
-
-                    </SearchResultsContainer>
-                </SearchBarContainer>
-            </Navbar>
+            <Navbar userProfilePic={user.picture}/>
             <UserPageContainer>
-                <img/>
-                <p>{userProfile}'s posts</p>
+                <img src={userPicture}/>
+                <p>{userName}'s posts</p>
             </UserPageContainer>
         </>
     )
 }
 
-const NavBar = styled.div``
-
-const SearchBarContainer = styled.div`
-    height: 45px;
-    width: 563px;
-    border-radius: 8px;
-    background-color: #FFFFFF;
-    position:fixed;
-    top:0;
-    margin:auto;
-`
-
-const SearchBar = styled.input`
-
-`
-
 const UserPageContainer = styled.div`
-    height: 64px;
-    width: 611px;
-    border-radius: 16px;
+    height: 158px;
+    margin:0 auto;
+    margin-top:72px;
+    padding:18px;
+    gap:18px;
     display:flex;
     justify-content:flex-start;
     align-items:center;
@@ -70,10 +50,13 @@ const UserPageContainer = styled.div`
     }
     p{
         height: 64px;
-        width: 423px;
+        color: white;
         font-family: Oswald;
         font-size: 43px;
         font-weight: 700;
         line-height: 64px;
+    }
+    @media (max-width: 768px) {
+        margin-top: 100px;
     }
 `
