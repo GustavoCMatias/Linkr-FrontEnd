@@ -8,11 +8,16 @@ function signUp(body) {
 
 function singIn(body) {
     return axios.post(`${process.env.REACT_APP_API_URL}/sign-in`, body);
-  
-  }
+
+}
+
+function returnUser(token) {
+    return axios.get(`${process.env.REACT_APP_API_URL}/return-user`, token);
+} 
 
 const apiAuth = {
-    signUp, 
-    singIn
+    signUp,
+    singIn,
+    returnUser
 }
 export default apiAuth;
