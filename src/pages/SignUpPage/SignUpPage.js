@@ -10,7 +10,7 @@ export default function SignUpPage() {
         email: '',
         password: '',
         username: '',
-        pictureUrl: ''
+        picture_url: ''
     });
 
     function handleForm(e) {
@@ -24,7 +24,7 @@ export default function SignUpPage() {
             email: form.email,
             password: form.password,
             username: form.username,
-            pictureUrl: form.pictureUrl
+            picture_url: form.pictureUrl
         }
 
         apiAuth
