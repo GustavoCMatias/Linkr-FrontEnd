@@ -4,9 +4,9 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { DebounceInput } from "react-debounce-input";
 import axios from "axios";
 import { AuthContext } from '../context/user.context';
+import { Link } from "react-router-dom"
 
 export default function Navbar() {
-    const userProfilePic = ''
     const [searchName, setSearchName] = useState('');
     const [searchResults, setSearchResults] = useState([]);
     const { user } = useContext(AuthContext);
@@ -16,16 +16,16 @@ export default function Navbar() {
 
     function onNameSearchChange(e) {
         setSearchName(e.target.value);
-        axios.get(`${process.env.REACT_APP_API_URL}/users/:${searchName}`)
+        if (e.target.value.length < 3) { setSearchResults([]) }
+        axios.get(`${process.env.REACT_APP_API_URL}/users/${e.target.value}`)
             .then(res => {
-                console.log(res.data)
-                setSearchResults(res.data);
+                setSearchResults(res.data[0]);
             })
             .catch(err => console.log(err));
     }
 
     useEffect(() => {
-        function toggleClickOutside (e) {
+        function toggleClickOutside(e) {
             if (
                 logUserOutRef.current &&
                 !logUserOutRef.current.contains(e.target)
@@ -62,16 +62,16 @@ export default function Navbar() {
                     {searchResults.length > 0 && <SearchResultsContainer>
                         <SearchResult></SearchResult>
                         {searchResults.map(searchElement => {
-                            return <SearchResult>
-                                <img src={userProfilePic} />
-                                {searchElement}
+                            return <SearchResult key={searchElement.id}>
+                                <img src={searchElement.picture} alt='' />
+                                <Link to={`/user/${searchElement.id}`}><p>{searchElement.username}</p></Link>
                             </SearchResult>
                         })}
                     </SearchResultsContainer>}
                 </SearchBarContainer>
                 <OptionsProfileContainer onClick={toggleLogout} logout={logout}>
                     <p><AiOutlineDown /></p>
-                    <img src={user.picture_url} />
+                    <img src={user?.picture_url} alt=''/>
                 </OptionsProfileContainer>
             </NavbarContainer>
 
@@ -183,7 +183,16 @@ const SearchResult = styled.div`
         height: 39px;
         width: 39px;
         border-radius: 304px;
-
+    }
+    p{
+        height: 23px;
+        width: 115px;
+        font-family: Lato;
+        font-size: 19px;
+        font-weight: 400;
+        line-height: 23px;
+        text-align: left;
+        color: #515151;
     }
 `
 

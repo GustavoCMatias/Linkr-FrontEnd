@@ -1,22 +1,26 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState ,useContext} from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components"
 import Navbar from "../../components/Navbar"
+import { AuthContext } from "../../context/user.context";
 
-export default function UserPage(props){
-    const user = props|'';
+export default function UserPage(){
     const {id:userId} = useParams();
     const [userName, setUserName] = useState('');
     const [userPicture, setUserPicture] = useState('');
-    const token = '';
+    const { token } = useContext(AuthContext);
 
     useEffect(() => {
         const config={
-            Authorization: `Bearer: ${token}}`
+            headers: {
+                Authorization: `Bearer ${token}`,
+              },
         }
+        console.log(config)
         axios.get(`${process.env.REACT_APP_API_URL}/user/${userId}`,config)
         .then(res=>{
+            console.log(res);
             setUserName(res.data.name);
             setUserPicture(res.data.picture);
         })
@@ -25,7 +29,7 @@ export default function UserPage(props){
     
     return(
         <>
-            <Navbar userProfilePic={user.picture}/>
+            <Navbar/>
             <UserPageContainer>
                 <img src={userPicture}/>
                 <p>{userName}'s posts</p>
