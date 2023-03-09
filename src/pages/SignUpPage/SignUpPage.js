@@ -37,7 +37,7 @@ export default function SignUpPage() {
             })
             .catch((err) => {
                 console.log(err.response.data);
-                setDisabled(false);
+                setDisabled(false)
             });
     }
 

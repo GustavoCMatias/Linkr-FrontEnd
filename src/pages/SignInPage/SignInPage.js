@@ -14,9 +14,8 @@ export default function SignInPage() {
 
     function signIn(e) {
         e.preventDefault();
-        console.log('cliquei')
         setDisabled(true);
-
+        
         apiAuth
             .singIn(form)
             .then((res) => {
