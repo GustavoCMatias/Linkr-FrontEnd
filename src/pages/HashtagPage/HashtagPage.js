@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import styled from "styled-components"
 import Navbar from "../../components/Navbar.js"
 import Post from "../../components/Post.js";
+import { HashtagsBlock } from "../../components/HashtagBlock.js";
 
 export default function HashtagPage(props) {
     const user = props | '';
@@ -32,7 +33,7 @@ export default function HashtagPage(props) {
             <HashtagPageContainer>
             <p># {hashtag}</p>
                 {posts.map( item => <Post></Post>)}
-                
+            <HashtagsBlock></HashtagsBlock>
             </HashtagPageContainer>
         </>
     )
