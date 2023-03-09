@@ -1,28 +1,28 @@
 import { SignInContainer, Title, FormContainer, TextContainer } from './SignInPageCss.js';
 import { Link, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import apiAuth from '../../services/apiAuth.js';
+import { AuthContext } from '../../context/user.context.js';
 
 
 export default function SignInPage() {
 
     const navigate = useNavigate();
-    //const { setUser } = useContext(UserContext);
+    const {keepLoggedIn} = useContext(AuthContext)
 
     const [form, setForm] = useState({ email: "", password: "" });
     const [disabled, setDisabled] = useState(false);
 
     function signIn(e) {
         e.preventDefault();
-        console.log('cliquei')
         setDisabled(true);
-
+        
         apiAuth
             .singIn(form)
             .then((res) => {
-                console.log(res.data);
-                //setUser(res.data);
-                navigate("/timeline");
+                console.log('SOU O RES.DATA',res.data.token);
+                keepLoggedIn(res.data);
+               
             })
             .catch((err) => {
                 console.log(err.response.data);

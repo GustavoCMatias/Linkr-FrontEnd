@@ -13,6 +13,7 @@ export const AuthProvider = ({ children }) => {
 
   function keepLoggedIn(data) {
     const { token } = data;
+    console.log('AQUI TA O TOKEN', token);
 
     apiAuth
       .returnUser(token)
@@ -22,7 +23,7 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem("user", JSON.stringify(loggedUser));
         localStorage.setItem("tokenUser", JSON.stringify(token));
 
-        console.log(loggedUser);
+        console.log('LOGGED AQUI', loggedUser);
 
         setUser(loggedUser);
         setToken(token);

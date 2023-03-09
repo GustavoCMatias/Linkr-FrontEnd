@@ -1,7 +1,5 @@
 import axios from "axios";
 
-
-
 function signUp(body) {
     return axios.post(`${process.env.REACT_APP_API_URL}/sign-up`, body);
 }
@@ -12,9 +10,12 @@ function singIn(body) {
 }
 
 function returnUser(token) {
-    return axios.get(`${process.env.REACT_APP_API_URL}/return-user`, token);
-} 
-
+    return axios.get(`${process.env.REACT_APP_API_URL}/return-user`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  }
 const apiAuth = {
     signUp,
     singIn,

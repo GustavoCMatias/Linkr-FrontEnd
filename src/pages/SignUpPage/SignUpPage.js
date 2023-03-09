@@ -29,6 +29,10 @@ export default function SignUpPage() {
             picture_url: form.pictureUrl
         }
 
+        if (!form.email || !form.password || !form.username || !form.picture_url) {
+            alert ('All fields are required!')
+        }
+
         apiAuth
             .signUp(body)
             .then((res) => {
@@ -37,7 +41,10 @@ export default function SignUpPage() {
             })
             .catch((err) => {
                 console.log(err.response.data);
-                setDisabled(false);
+                if (err.response.data === 'Conflict') {
+                    alert('This account has already been created!')
+                }
+                setDisabled(false)
             });
     }
 
@@ -59,7 +66,6 @@ export default function SignUpPage() {
                         value={form.email}
                         placeholder='email'
                         onChange={handleForm}
-                        required
                     />
 
                     <input
@@ -68,7 +74,6 @@ export default function SignUpPage() {
                         value={form.password}
                         placeholder='password'
                         onChange={handleForm}
-                        required
                     />
 
                     <input
@@ -77,7 +82,6 @@ export default function SignUpPage() {
                         value={form.username}
                         placeholder='username'
                         onChange={handleForm}
-                        required
                     />
 
                     <input
@@ -86,7 +90,6 @@ export default function SignUpPage() {
                         value={form.pictureUrl}
                         placeholder='picture url'
                         onChange={handleForm}
-                        required
                     />
 
 
