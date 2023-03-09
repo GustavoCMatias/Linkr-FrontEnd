@@ -5,10 +5,8 @@ import SignUpPage from "./pages/SignUpPage/SignUpPage";
 import UserPage from "./pages/UserPage/UserPage";
 import Timeline from "./pages/Timeline/Timeline";
 
-
 export default function App() {
   return (
-
     <BrowserRouter>
       <AuthProvider>
         <Routes>
@@ -18,6 +16,6 @@ export default function App() {
           <Route path="/timeline" element={<Timeline />} />
         </Routes>
       </AuthProvider>
-    </BrowserRouter>
+    </BrowserRouter >
   )
 }

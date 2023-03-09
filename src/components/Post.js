@@ -1,10 +1,10 @@
 import styled from "styled-components";
 import { ProfilePicture } from "../pages/Timeline/TimelineCss";
-import urlMetaData from 'url-metadata'
+
 import { useEffect } from "react";
 
 export default function Post({name}){
-    useEffect(() => {
+    /* useEffect(() => {
         urlMetaData('http://bit.ly/2ePIrDy').then(
             function (metadata) { 
               console.log(metadata)
@@ -12,7 +12,7 @@ export default function Post({name}){
             function (error) { 
               console.log(error)
             })
-    }, [])
+    }, []) */
     
     return(
         <>
