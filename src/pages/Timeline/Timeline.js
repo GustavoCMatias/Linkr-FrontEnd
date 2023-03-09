@@ -17,12 +17,12 @@ export default function Timeline() {
     useEffect(() => {
         axios.get(`${process.env.REACT_APP_API_URL}/timeline`)
             .then(res => {
-                console.log(res);
+                console.log(res, 'use effect');
                 setPostsTimeline(res.data);
                 setIsLoading(false);
             })
             .catch(err => alert('An error occured while trying to fetch the posts, please refresh the page'));
-    }, [postsTimeline])
+    }, [])
 
     const [form, setForm] = useState({
         link: '',
@@ -81,7 +81,7 @@ export default function Timeline() {
                                 required
                             />
                             <ButtonContainer>
-                                <button type='submit'>Publish</button>
+                                <button type='submit' disabled={disabled}>Publish</button>
                             </ButtonContainer>
                         </form>
                     </FormPostContainer>

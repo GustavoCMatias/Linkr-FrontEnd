@@ -9,12 +9,10 @@ export default function Navbar() {
     const userProfilePic = ''
     const [searchName, setSearchName] = useState('');
     const [searchResults, setSearchResults] = useState([]);
-    const token = '';
     const { user } = useContext(AuthContext);
     const { logUserOut } = useContext(AuthContext);
     const [logout, setLogout] = useState(false);
     const logUserOutRef = useRef();
-
 
     function onNameSearchChange(e) {
         setSearchName(e.target.value);
@@ -190,12 +188,12 @@ const SearchResult = styled.div`
 `
 
 const LogoutContainer = styled.div`
-height: 47px;
-position: fixed;
-right: -5px;
-top: 72px;
-align-content: flex-end;
-display: ${(props) => (props.logout ? "block" : "none")};
+    height: 47px;
+    position: fixed;
+    right: -5px;
+    top: 72px;
+    align-content: flex-end;
+    display: ${(props) => (props.logout ? "block" : "none")};
 button{
     width: 150px;
     height: 47px;
@@ -208,6 +206,5 @@ button{
     line-height: 20px;
     color: #fff;
     border-style: none;
-}
-    
+    }
 `

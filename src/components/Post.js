@@ -10,6 +10,7 @@ export default function Post({post}){
     const [postUrl, setPostUrl] = useState('');
     const [postPicture, setPostPicture] = useState('');
     useEffect(()=>{
+        console.log(post)
         axios.get('./link',{url:post.url})
         .then(res=>{
             setPostTitle(res.title);
@@ -31,7 +32,7 @@ export default function Post({post}){
                             <h4>{postDescription}</h4>
                             <h5>{postUrl}</h5>
                         </div>
-                        <img />
+                        <img src={postPicture[0]} alt=''/>
                     </LinkContainer>
                 </PostContentsContainer>
             </StyledBoxPostContainer>
