@@ -1,28 +1,25 @@
 import axios from 'axios';
 import { useContext, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import Navbar from '../../components/Navbar'
 import Post from '../../components/Post';
-import { ButtonContainer, CreatePostContainer, ProfilePicture, StyledBoxPost, StyledTitlePage, FormPostContainer,PostsContainer } from '../Timeline/TimelineCss';
+import { ButtonContainer, CreatePostContainer, ProfilePicture, StyledBoxPost, StyledTitlePage, FormPostContainer, PostsContainer } from '../Timeline/TimelineCss';
 import { AuthContext } from '../../context/user.context';
 
 export default function Timeline() {
-    const navigate = useNavigate();
     const [disabled, setDisabled] = useState(false);
     const [postsTimeline, setPostsTimeline] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const { user } = useContext(AuthContext);
-    const {token} = useContext(AuthContext);
+    const { token } = useContext(AuthContext);
 
     useEffect(() => {
         axios.get(`${process.env.REACT_APP_API_URL}/timeline`)
             .then(res => {
-                console.log(res, 'use effect');
                 setPostsTimeline(res.data);
                 setIsLoading(false);
             })
             .catch(err => alert('An error occured while trying to fetch the posts, please refresh the page'));
-    }, [])
+    }, [postsTimeline])
 
     const [form, setForm] = useState({
         link: '',
@@ -38,17 +35,23 @@ export default function Timeline() {
         setDisabled(true);
         const body = {
             link: form.link,
-            description: form.description
+            message: form.description
         }
         const config = {
-            Authorization: `Bearer: ${token}}`
+            headers:{
+                Authorization: `Bearer ${token}`
+            }
         }
-        axios.post(`${process.env.REACT_APP_API_URL}timeline`, body, config)
+        axios.post(`${process.env.REACT_APP_API_URL}/timeline`, body, config)
             .then(res => {
                 setDisabled(false);
+                setForm({ link: '',
+                description: ''});
+                setPostsTimeline(postsTimeline);
             })
             .catch(err => {
-                console.log(err)
+                alert("There was an error publishing your link");
+                setDisabled(false);
             })
     }
     return (
@@ -56,7 +59,7 @@ export default function Timeline() {
             <Navbar />
             <StyledTitlePage>timeline</StyledTitlePage>
             <StyledBoxPost>
-                <ProfilePicture src={user.picture_url} alt=''/>
+                <ProfilePicture src={user.picture_url} alt='' />
                 <CreatePostContainer>
                     <h2>What are you going to share today?</h2>
                     <FormPostContainer>
@@ -78,10 +81,9 @@ export default function Timeline() {
                                 placeholder='Awesome article about #javascript'
                                 onChange={handleForm}
                                 height={'66px'}
-                                required
                             />
                             <ButtonContainer>
-                                <button type='submit' disabled={disabled}>Publish</button>
+                                <button type='submit' disabled={disabled}>{disabled ? 'Publishing...' : 'Publish'}</button>
                             </ButtonContainer>
                         </form>
                     </FormPostContainer>
@@ -93,8 +95,8 @@ export default function Timeline() {
                         <h2>Loading</h2> :
                         postsTimeline.length == 0 ?
                             <h2>There are no posts yet</h2> :
-                            postsTimeline.map(post=>{
-                                <Post post={post}/>
+                            postsTimeline.map(post => {
+                                return <Post key={post.post_id} post={post} />
                             })
                 }
             </PostsContainer>

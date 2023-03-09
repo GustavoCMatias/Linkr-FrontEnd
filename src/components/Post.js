@@ -1,28 +1,32 @@
 import styled from "styled-components";
 import { ProfilePicture } from "../pages/Timeline/TimelineCss";
-
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
-export default function Post({post}){
+export default function Post({ post }) {
     const [postTitle, setPostTitle] = useState('');
     const [postDescription, setPostDescription] = useState([]);
     const [postUrl, setPostUrl] = useState('');
     const [postPicture, setPostPicture] = useState('');
-    useEffect(()=>{
-        console.log(post)
-        axios.get('./link',{url:post.url})
-        .then(res=>{
-            setPostTitle(res.title);
-            setPostDescription(res.description);
-            setPostUrl(res.url);
-            setPostPicture(res.image);
-        })
-    },[]) 
-    return(
+    useEffect(() => {
+        const config = {
+            headers: {
+                url: post.link
+            }
+        }
+        axios.get(`${process.env.REACT_APP_API_URL}/link`, config)
+            .then(res => {
+                setPostTitle(res.data.title);
+                setPostDescription(res.data.description);
+                setPostUrl(res.data.url);
+                if (res.data.image) setPostPicture(res.data.image[0]);
+            })
+    }, [])
+    return (
         <>
             <StyledBoxPostContainer>
-                <ProfilePicture />
+                <ProfilePicture src="" />
                 <PostContentsContainer>
                     <h1>{post.name}</h1>
                     <h2>{post.message}</h2>
@@ -30,9 +34,9 @@ export default function Post({post}){
                         <div>
                             <h3>{postTitle}</h3>
                             <h4>{postDescription}</h4>
-                            <h5>{postUrl}</h5>
+                            <a href={postUrl}><h5>{postUrl}</h5></a>
                         </div>
-                        <img src={postPicture[0]} alt=''/>
+                        <img src={postPicture} alt='' />
                     </LinkContainer>
                 </PostContentsContainer>
             </StyledBoxPostContainer>
@@ -63,6 +67,7 @@ const PostContentsContainer = styled.div`
         font-size: 19px;
         font-weight: 400;
         color:white;
+        overflow:hidden;
     }
     h2{
         height: 52px;
@@ -73,6 +78,7 @@ const PostContentsContainer = styled.div`
         line-height: 20px;
         text-align: left;
         color: #B7B7B7;
+        overflow:hidden;
     }
 `
 const LinkContainer = styled.div`
@@ -95,6 +101,7 @@ const LinkContainer = styled.div`
         line-height: 19px;
         text-align: left;
         color: #CECECE;
+        overflow:hidden;
     }
     h4{
         height: 39px;
@@ -105,6 +112,7 @@ const LinkContainer = styled.div`
         line-height: 13px;
         text-align: left;
         color: #9B9595;
+        overflow:hidden;
     }
     h5{
         margin-top:13px;
@@ -116,6 +124,7 @@ const LinkContainer = styled.div`
         line-height: 13px;
         text-align: left;
         color: #CECECE;
+        overflow:hidden;
     }
     img{
         height: 155px;
