@@ -26,7 +26,7 @@ export default function SignUpPage() {
             email: form.email,
             password: form.password,
             username: form.username,
-            picture_url: form.pictureUrl
+            picture_url: form.picture_url
         }
 
         if (!form.email || !form.password || !form.username || !form.picture_url) {
@@ -85,9 +85,9 @@ export default function SignUpPage() {
                     />
 
                     <input
-                        id='pictureUrl'
+                        id='picture_url'
                         type='text'
-                        value={form.pictureUrl}
+                        value={form.picture_url}
                         placeholder='picture url'
                         onChange={handleForm}
                     />
