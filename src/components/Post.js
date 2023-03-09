@@ -1,34 +1,38 @@
 import styled from "styled-components";
 import { ProfilePicture } from "../pages/Timeline/TimelineCss";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
-export default function Post({name}){
-    /* useEffect(() => {
-        urlMetaData('http://bit.ly/2ePIrDy').then(
-            function (metadata) { 
-              console.log(metadata)
-            },
-            function (error) { 
-              console.log(error)
-            })
-    }, []) */
-    
+export default function Post({post}){
+    const [postTitle, setPostTitle] = useState('');
+    const [postDescription, setPostDescription] = useState([]);
+    const [postUrl, setPostUrl] = useState('');
+    const [postPicture, setPostPicture] = useState('');
+    useEffect(()=>{
+        console.log(post)
+        axios.get('./link',{url:post.url})
+        .then(res=>{
+            setPostTitle(res.title);
+            setPostDescription(res.description);
+            setPostUrl(res.url);
+            setPostPicture(res.image);
+        })
+    },[]) 
     return(
         <>
             <StyledBoxPostContainer>
                 <ProfilePicture />
                 <PostContentsContainer>
-                    <h1>Juvenal Juvêncio </h1>
-                    <h2>Muito maneiro esse tutorial de Material UI com React, deem uma olhada!</h2>
+                    <h1>{post.name}</h1>
+                    <h2>{post.message}</h2>
                     <LinkContainer>
                         <div>
-                            <h3>Como aplicar o Material UI em um 
-projeto React</h3>
-                            <h4>Hey! I have moved this tutorial to my personal blog. Same content, new location. Sorry about making you click through to another page.</h4>
-                            <h5>https://medium.com/@pshrmn/a-simple-react-router</h5>
+                            <h3>{postTitle}</h3>
+                            <h4>{postDescription}</h4>
+                            <h5>{postUrl}</h5>
                         </div>
-                        <img />
+                        <img src={postPicture[0]} alt=''/>
                     </LinkContainer>
                 </PostContentsContainer>
             </StyledBoxPostContainer>
