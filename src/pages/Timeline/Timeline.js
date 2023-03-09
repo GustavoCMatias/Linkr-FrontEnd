@@ -1,8 +1,9 @@
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../../components/Navbar'
 import Post from '../../components/Post';
+import { AuthContext } from '../../context/user.context';
 import { ButtonContainer, CreatePostContainer, ProfilePicture, StyledBoxPost, StyledTitlePage, FormPostContainer,PostsContainer } from '../Timeline/TimelineCss'
 
 export default function Timeline() {
@@ -10,13 +11,13 @@ export default function Timeline() {
     const [disabled, setDisabled] = useState(false);
     const [postsTimeline, setPostsTimeline] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-    //precisa obter token
-    const token = '';
+    const data = useContext(AuthContext);
 
     useEffect(() => {
         axios.get(`${process.env.REACT_APP_API_URL}/timeline`)
             .then(res => {
                 setPostsTimeline(res.data);
+                setIsLoading(false);
             })
             .catch(err => alert('An error occured while trying to fetch the posts, please refresh the page'));
     }, [postsTimeline])
@@ -38,7 +39,7 @@ export default function Timeline() {
             description: form.description
         }
         const config = {
-            Authorization: `Bearer: ${token}}`
+            Authorization: `Bearer: ${data.token}}`
         }
         axios.post(`${process.env.REACT_APP_API_URL}timeline`, body, config)
             .then(res => {
@@ -53,7 +54,7 @@ export default function Timeline() {
             <Navbar />
             <StyledTitlePage>timeline</StyledTitlePage>
             <StyledBoxPost>
-                <ProfilePicture />
+                <ProfilePicture src={data.picture_url}/>
                 <CreatePostContainer>
                     <h2>What are you going to share today?</h2>
                     <FormPostContainer>
@@ -91,7 +92,9 @@ export default function Timeline() {
                         <h2>Loading</h2> :
                         postsTimeline.length == 0 ?
                             <h2>There are no posts yet</h2> :
-                            {}
+                            postsTimeline.map(post=>{
+                                <Post data={post}/>
+                            })
                 }
             </PostsContainer>
         </>
