@@ -16,10 +16,9 @@ export default function Navbar() {
 
     function onNameSearchChange(e) {
         setSearchName(e.target.value);
-        axios.get(`${process.env.REACT_APP_API_URL}/users/:${searchName}`)
+        axios.get(`${process.env.REACT_APP_API_URL}/users/${e.target.value}`)
             .then(res => {
-                console.log(res.data)
-                setSearchResults(res.data);
+                setSearchResults(res.data[0]);
             })
             .catch(err => console.log(err));
     }
@@ -62,9 +61,9 @@ export default function Navbar() {
                     {searchResults.length > 0 && <SearchResultsContainer>
                         <SearchResult></SearchResult>
                         {searchResults.map(searchElement => {
-                            return <SearchResult>
-                                <img src={userProfilePic} />
-                                {searchElement}
+                            return <SearchResult key={searchElement.id}>
+                                <img src={searchElement.picture} alt=''/>
+                                <p>{searchElement.username}</p>
                             </SearchResult>
                         })}
                     </SearchResultsContainer>}
@@ -183,7 +182,16 @@ const SearchResult = styled.div`
         height: 39px;
         width: 39px;
         border-radius: 304px;
-
+    }
+    p{
+        height: 23px;
+        width: 115px;
+        font-family: Lato;
+        font-size: 19px;
+        font-weight: 400;
+        line-height: 23px;
+        text-align: left;
+        color: #515151;
     }
 `
 
