@@ -4,21 +4,22 @@ import { useNavigate } from 'react-router-dom';
 import Navbar from '../../components/Navbar'
 import Post from '../../components/Post';
 import { ButtonContainer, CreatePostContainer, ProfilePicture, StyledBoxPost, StyledTitlePage, FormPostContainer,PostsContainer } from '../Timeline/TimelineCss';
-//import { AuthContext } from '../../context/user.context';
+import { AuthContext } from '../../context/user.context';
 
 export default function Timeline() {
     const navigate = useNavigate();
     const [disabled, setDisabled] = useState(false);
     const [postsTimeline, setPostsTimeline] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-    //const {token} = useContext(AuthContext);
-    //precisa obter token
-    const token = '';
+    const { user } = useContext(AuthContext);
+    const {token} = useContext(AuthContext);
 
     useEffect(() => {
         axios.get(`${process.env.REACT_APP_API_URL}/timeline`)
             .then(res => {
+                console.log(res);
                 setPostsTimeline(res.data);
+                setIsLoading(false);
             })
             .catch(err => alert('An error occured while trying to fetch the posts, please refresh the page'));
     }, [postsTimeline])
@@ -55,7 +56,7 @@ export default function Timeline() {
             <Navbar />
             <StyledTitlePage>timeline</StyledTitlePage>
             <StyledBoxPost>
-                <ProfilePicture />
+                <ProfilePicture src={user.picture_url} alt=''/>
                 <CreatePostContainer>
                     <h2>What are you going to share today?</h2>
                     <FormPostContainer>
@@ -87,13 +88,14 @@ export default function Timeline() {
                 </CreatePostContainer>
             </StyledBoxPost>
             <PostsContainer>
-                <Post/>
                 {
                     isLoading ?
                         <h2>Loading</h2> :
                         postsTimeline.length == 0 ?
                             <h2>There are no posts yet</h2> :
-                            {}
+                            postsTimeline.map(post=>{
+                                <Post post={post}/>
+                            })
                 }
             </PostsContainer>
         </>

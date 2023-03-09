@@ -100,7 +100,7 @@ const NavbarContainer = styled.div`
     position:fixed;
     top:0;
     left:0;
-    z-index:0;
+    z-index:1;
     h1{
         height: 54px;
         width: 108px;
