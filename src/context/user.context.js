@@ -34,8 +34,7 @@ export const AuthProvider = ({ children }) => {
       });
   }
 
-  const logout = () => {
-    console.log("Você saiu!");
+  const logUserOut = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("tokenUser");
     setUser(null);
@@ -64,7 +63,7 @@ export const AuthProvider = ({ children }) => {
         token,
         keepLoggedIn,
         loading,
-        logout,
+        logUserOut,
       }}
     >
       {children}
