@@ -1,50 +1,92 @@
 import styled from "styled-components"
-import { AiOutlineDown,AiOutlineSearch } from "react-icons/ai";
-import { useState } from "react";
+import { AiOutlineDown, AiOutlineSearch } from "react-icons/ai";
+import { useContext, useEffect, useRef, useState } from "react";
 import { DebounceInput } from "react-debounce-input";
 import axios from "axios";
+import { AuthContext } from '../context/user.context';
 
 export default function Navbar() {
-    const userProfilePic  = ''
+    const userProfilePic = ''
     const [searchName, setSearchName] = useState('');
     const [searchResults, setSearchResults] = useState([]);
     const token = '';
+    const { user } = useContext(AuthContext);
+    const { logUserOut } = useContext(AuthContext);
+    const [logout, setLogout] = useState(false);
+    const logUserOutRef = useRef();
+
+
     function onNameSearchChange(e) {
         setSearchName(e.target.value);
         axios.get(`${process.env.REACT_APP_API_URL}/users/:${searchName}`)
-        .then(res=>{
-            console.log(res.data)
-            setSearchResults(res.data);
-        })
-        .catch(err=>console.log(err));
+            .then(res => {
+                console.log(res.data)
+                setSearchResults(res.data);
+            })
+            .catch(err => console.log(err));
     }
+
+    useEffect(() => {
+        function toggleClickOutside (e) {
+            if (
+                logUserOutRef.current &&
+                !logUserOutRef.current.contains(e.target)
+            ) {
+                setLogout(false);
+            }
+        };
+
+        document.addEventListener("click", toggleClickOutside);
+
+        return () => {
+            document.removeEventListener("click", toggleClickOutside);
+        };
+    }, []);
+
+    function toggleLogout(e) {
+        e.stopPropagation();
+        setLogout(!logout);
+    }
+
     return (
-        <NavbarContainer>
-            <h1>linkr</h1>
-            <SearchBarContainer>
-                <DebounceInput
-                    element={SearchBar}
-                    minLength={3}
-                    debounceTimeout={300}
-                    value={searchName}
-                    onChange={onNameSearchChange}
-                    placeholder={'Search for people'}>
-                </DebounceInput>
-                {searchResults.length > 0 && <SearchResultsContainer>
-                    <SearchResult></SearchResult>
-                    {searchResults.map(searchElement => {
-                        return <SearchResult>
-                            <img src={userProfilePic} />
-                            {searchElement}
-                        </SearchResult>
-                    })}
-                </SearchResultsContainer>}
-            </SearchBarContainer>
-            <OptionsProfileContainer>
-                <p><AiOutlineDown /></p>
-                <img src={userProfilePic} />
-            </OptionsProfileContainer>
-        </NavbarContainer>
+        <>
+            <NavbarContainer>
+                <h1>linkr</h1>
+                <SearchBarContainer>
+                    <DebounceInput
+                        element={SearchBar}
+                        minLength={3}
+                        debounceTimeout={300}
+                        value={searchName}
+                        onChange={onNameSearchChange}
+                        placeholder={'Search for people'}>
+                    </DebounceInput>
+                    {searchResults.length > 0 && <SearchResultsContainer>
+                        <SearchResult></SearchResult>
+                        {searchResults.map(searchElement => {
+                            return <SearchResult>
+                                <img src={userProfilePic} />
+                                {searchElement}
+                            </SearchResult>
+                        })}
+                    </SearchResultsContainer>}
+                </SearchBarContainer>
+                <OptionsProfileContainer onClick={toggleLogout} logout={logout}>
+                    <p><AiOutlineDown /></p>
+                    <img src={user.picture_url} />
+                </OptionsProfileContainer>
+            </NavbarContainer>
+
+            <LogoutContainer logout={logout}>
+                <button
+                    onClick={logUserOut}
+                    logout={logout}
+                    ref={logUserOutRef}
+                    className="logoutButton"
+                >Logout
+                </button>
+            </LogoutContainer>
+        </>
     )
 }
 
@@ -78,6 +120,7 @@ const OptionsProfileContainer = styled.div`
     p{
         font-size:28px;
         color:white;
+        transform: ${(props) => props.logout ? "rotate(180deg)" : "rotate(0deg)"}
     }
     img{
         height: 53px;
@@ -144,4 +187,27 @@ const SearchResult = styled.div`
         border-radius: 304px;
 
     }
+`
+
+const LogoutContainer = styled.div`
+height: 47px;
+position: fixed;
+right: -5px;
+top: 72px;
+align-content: flex-end;
+display: ${(props) => (props.logout ? "block" : "none")};
+button{
+    width: 150px;
+    height: 47px;
+    border-radius: 0px 0px 20px 20px;
+    background-color: #171717;
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 17px;
+    line-height: 20px;
+    color: #fff;
+    border-style: none;
+}
+    
 `

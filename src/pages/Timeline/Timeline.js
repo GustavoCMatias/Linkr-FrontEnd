@@ -1,15 +1,17 @@
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../../components/Navbar'
 import Post from '../../components/Post';
-import { ButtonContainer, CreatePostContainer, ProfilePicture, StyledBoxPost, StyledTitlePage, FormPostContainer,PostsContainer } from '../Timeline/TimelineCss'
+import { ButtonContainer, CreatePostContainer, ProfilePicture, StyledBoxPost, StyledTitlePage, FormPostContainer,PostsContainer } from '../Timeline/TimelineCss';
+//import { AuthContext } from '../../context/user.context';
 
 export default function Timeline() {
     const navigate = useNavigate();
     const [disabled, setDisabled] = useState(false);
     const [postsTimeline, setPostsTimeline] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    //const {token} = useContext(AuthContext);
     //precisa obter token
     const token = '';
 
