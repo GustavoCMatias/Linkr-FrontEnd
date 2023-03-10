@@ -1,21 +1,22 @@
 import axios from "axios";
-import { useEffect, useState ,useContext} from "react";
+import { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components"
+import { HashtagsBlock } from "../../components/HashtagBlock";
 import Navbar from "../../components/Navbar"
 import Post from '../../components/Post';
 import { AuthContext } from "../../context/user.context";
 import { PostsContainer } from "../Timeline/TimelineCss";
 
-export default function UserPage(){
-    const {id:userId} = useParams();
+export default function UserPage() {
+    const { id: userId } = useParams();
     const [userName, setUserName] = useState('');
     const [userPicture, setUserPicture] = useState('');
     const [postsTimeline, setPostsTimeline] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-    const { token ,user} = useContext(AuthContext);
-    
-    function RefreshList(){
+    const { token, user } = useContext(AuthContext);
+
+    function RefreshList() {
         setPostsTimeline([]);
         setIsLoading(true);
     }
@@ -36,7 +37,7 @@ export default function UserPage(){
                 Authorization: `Bearer ${token}`
             }
         }
-        axios.get(`${process.env.REACT_APP_API_URL}/user/${userId}`,config)
+        axios.get(`${process.env.REACT_APP_API_URL}/user/${userId}`, config)
             .then(res => {
                 console.log(res);
                 setUserName(res.data.username);
@@ -44,25 +45,33 @@ export default function UserPage(){
             })
             .catch(err => console.log(err));
     }, [])
-    
-    return(
+
+    return (
         <>
-            <Navbar/>
-            <UserPageContainer data-test="post">
-                <img src={userPicture}/>
-                <p>{userName}'s posts</p>
-            </UserPageContainer>
-            <PostsContainer>
-                {
-                    isLoading ?
-                        <h2>Loading</h2> :
-                        postsTimeline.length == 0 ?
-                            <h2>There are no posts yet</h2> :
-                            postsTimeline.map(post => {
-                                return <Post key={post.post_id} post={post} RefreshList={RefreshList}/>
-                            })
-                }
-            </PostsContainer>
+            <Navbar />
+            <PostsGlobalContainer>
+                <LeftContainer>
+                    <UserPageContainer data-test="post">
+                        <img src={userPicture} />
+                        <p>{userName}'s posts</p>
+                    </UserPageContainer>
+
+                    <PostsContainer>
+                        {
+                            isLoading ?
+                                <h2>Loading</h2> :
+                                postsTimeline.length == 0 ?
+                                    <h2>There are no posts yet</h2> :
+                                    postsTimeline.map(post => {
+                                        return <Post key={post.post_id} post={post} RefreshList={RefreshList} />
+                                    })
+                        }
+                    </PostsContainer>
+                </LeftContainer>
+                <RightContainer>
+                    <HashtagsBlock />
+                </RightContainer>
+            </PostsGlobalContainer>
         </>
     )
 }
@@ -92,4 +101,26 @@ const UserPageContainer = styled.div`
     @media (max-width: 768px) {
         margin-top: 100px;
     }
+`
+
+const LeftContainer = styled.div`
+display: flex;
+flex-direction: column;
+height: 100%;
+`
+
+const RightContainer = styled.div`
+display: flex;
+margin-top: 233px;
+margin-left: 25px;
+
+@media screen and (max-width: 600px){
+        display: none;
+    }
+`
+
+const PostsGlobalContainer = styled.div`
+display: flex;
+flex-direction: row;
+height: auto;
 `
