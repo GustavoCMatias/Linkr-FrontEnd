@@ -1,13 +1,14 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useContext } from "react";
 import styled from "styled-components"
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { AuthContext } from '../context/user.context';
 
 
 
-export function HashtagsBlock() {
-    const token = '91461640-e721-4c63-af9b-09f666fe1805';
-    const url = 'http://localhost:5000'
+export function HashtagsBlock(){
+    const { token } = useContext(AuthContext);
+    const url = process.env.REACT_APP_API_URL
     const [hashtags, setHashtags] = React.useState([])
 
     useEffect(() => {
