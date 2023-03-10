@@ -105,7 +105,7 @@ export default function Post({ post, RefreshList }) {
                 </PostUserLikesContainer>
                 <PostContentsContainer>
                     <PostOwnerContainer>
-                        <h1>{post.username}</h1>
+                        <h1 data-test="username">{post.username}</h1>
                         {user.id == post.user_id && <EditAndDeleteContainer>
                             <h6 onClick={() => setEditPostMode(!editPostMode)}><TbPencil /></h6>
                             <h6 onClick={() => setDeletePostMode(true)}><TbTrashFilled /></h6>
@@ -115,8 +115,8 @@ export default function Post({ post, RefreshList }) {
                     <LinkContainer>
                         <div>
                             <h3>{postTitle}</h3>
-                            <h4>{postDescription}</h4>
-                            <a href={postUrl}><h5>{postUrl}</h5></a>
+                            <h4 data-test="description">{postDescription}</h4>
+                            <a data-test="link" href={postUrl}><h5>{postUrl}</h5></a>
                         </div>
                         <img src={postPicture} alt='' />
                     </LinkContainer>

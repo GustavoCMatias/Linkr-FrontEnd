@@ -26,7 +26,7 @@ export default function Timeline() {
         description: ''
     });
 
-    function RefreshList(){
+    function RefreshList() {
         setPostsTimeline([]);
         setIsLoading(true);
     }
@@ -43,15 +43,17 @@ export default function Timeline() {
             message: form.description
         }
         const config = {
-            headers:{
+            headers: {
                 Authorization: `Bearer ${token}`
             }
         }
         axios.post(`${process.env.REACT_APP_API_URL}/timeline`, body, config)
             .then(res => {
                 setDisabled(false);
-                setForm({ link: '',
-                description: ''});
+                setForm({
+                    link: '',
+                    description: ''
+                });
                 setPostsTimeline(postsTimeline);
             })
             .catch(err => {
@@ -65,7 +67,7 @@ export default function Timeline() {
             <StyledTitlePage>timeline</StyledTitlePage>
             <StyledBoxPost>
                 <ProfilePicture src={user.picture_url} alt='' />
-                <CreatePostContainer>
+                <CreatePostContainer data-test="publish-box">
                     <h2>What are you going to share today?</h2>
                     <FormPostContainer>
                         <form onSubmit={createPost}>
@@ -77,6 +79,7 @@ export default function Timeline() {
                                 onChange={handleForm}
                                 height={'30px'}
                                 required
+                                data-test="link"
                             />
 
                             <textarea
@@ -86,22 +89,26 @@ export default function Timeline() {
                                 placeholder='Awesome article about #javascript'
                                 onChange={handleForm}
                                 height={'66px'}
+                                data-test="description"
                             />
                             <ButtonContainer>
-                                <button type='submit' disabled={disabled}>{disabled ? 'Publishing...' : 'Publish'}</button>
+                                <button
+                                    data-test="publish-btn"
+                                    type='submit' disabled={disabled}>{disabled ? 'Publishing...' : 'Publish'}
+                                </button>
                             </ButtonContainer>
                         </form>
                     </FormPostContainer>
                 </CreatePostContainer>
             </StyledBoxPost>
-            <PostsContainer>
+            <PostsContainer data-test="post">
                 {
                     isLoading ?
                         <h2>Loading</h2> :
                         postsTimeline.length == 0 ?
                             <h2>There are no posts yet</h2> :
                             postsTimeline.map(post => {
-                                return <Post key={post.post_id} post={post} RefreshList={RefreshList}/>
+                                return <Post key={post.post_id} post={post} RefreshList={RefreshList} />
                             })
                 }
             </PostsContainer>
