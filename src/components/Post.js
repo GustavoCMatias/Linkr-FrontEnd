@@ -101,7 +101,7 @@ export default function Post({ post, RefreshList }) {
                 <PostUserLikesContainer>
                     <ProfilePicture src="" />
                     <h6><AiOutlineHeart /></h6>
-                    <p>{post.count_likes} likes</p>
+                    <p data-test="counter" >{post.count_likes} likes</p>
                 </PostUserLikesContainer>
                 <PostContentsContainer>
                     <PostOwnerContainer>
