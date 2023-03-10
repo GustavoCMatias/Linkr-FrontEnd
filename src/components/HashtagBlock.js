@@ -1,14 +1,15 @@
 import React, { useEffect } from "react";
 import styled from "styled-components"
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 
 
-export function HashtagsBlock(){
+export function HashtagsBlock() {
     const token = '91461640-e721-4c63-af9b-09f666fe1805';
     const url = 'http://localhost:5000'
     const [hashtags, setHashtags] = React.useState([])
-    
+
     useEffect(() => {
         const config = {
             headers: {
@@ -21,15 +22,21 @@ export function HashtagsBlock(){
             })
             .catch(err => console.log(err));
     }, [])
-    return(
+    return (
         <HashtagContainer data-test="trending">
             <h1>trending</h1>
             <div></div>
             <ul>
-                {hashtags.map(item => <li key={item.hashtag_name} data-test="hashtag"> # {item.hashtag_name} </li>)}
+                {hashtags.map(item => {
+                    <Link to={`/hashtag/${item.hashtag_name}`}>
+                        <li key={item.hashtag_name} data-test="hashtag">
+                            # {item.hashtag_name}
+                        </li>
+                    </Link>
+                })}
             </ul>
         </HashtagContainer>
-        )
+    )
 }
 
 const HashtagContainer = styled.div`
@@ -70,5 +77,8 @@ const HashtagContainer = styled.div`
         margin-bottom: 15px;
         margin-left: 16px;
 
+    }
+    @media (max-width: 600px ){
+    display: none;
     }
 `
