@@ -26,6 +26,11 @@ export default function Timeline() {
         description: ''
     });
 
+    function RefreshList(){
+        setPostsTimeline([]);
+        setIsLoading(true);
+    }
+
     function handleForm(e) {
         setForm({ ...form, [e.target.id]: e.target.value })
     }
@@ -96,7 +101,7 @@ export default function Timeline() {
                         postsTimeline.length == 0 ?
                             <h2>There are no posts yet</h2> :
                             postsTimeline.map(post => {
-                                return <Post key={post.post_id} post={post} />
+                                return <Post key={post.post_id} post={post} RefreshList={RefreshList}/>
                             })
                 }
             </PostsContainer>
