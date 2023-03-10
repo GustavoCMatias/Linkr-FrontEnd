@@ -8,7 +8,7 @@ import { AuthContext } from '../../context/user.context.js';
 export default function SignInPage() {
 
     const navigate = useNavigate();
-    const {keepLoggedIn} = useContext(AuthContext)
+    const { keepLoggedIn } = useContext(AuthContext)
 
     const [form, setForm] = useState({ email: "", password: "" });
     const [disabled, setDisabled] = useState(false);
@@ -17,16 +17,16 @@ export default function SignInPage() {
         e.preventDefault();
         setDisabled(true);
 
-        if(!form.email || !form.password) {
+        if (!form.email || !form.password) {
             alert('All fields are required!')
         }
-        
+
         apiAuth
             .singIn(form)
             .then((res) => {
-                console.log('SOU O RES.DATA',res.data.token);
+                console.log('SOU O RES.DATA', res.data.token);
                 keepLoggedIn(res.data);
-               
+
             })
             .catch((err) => {
                 console.log(err.response);
@@ -36,7 +36,7 @@ export default function SignInPage() {
                 if (err.response.status === 422) {
                     alert('Email must be valid and valid email!')
                 }
-                 return setDisabled(false);
+                return setDisabled(false);
             });
     }
 
@@ -61,6 +61,7 @@ export default function SignInPage() {
                         placeholder="email"
                         value={form.email}
                         onChange={handleForm}
+                        data-test="email"
                     />
 
                     <input
@@ -70,13 +71,19 @@ export default function SignInPage() {
                         placeholder="password"
                         value={form.password}
                         onChange={handleForm}
+                        data-test="password"
                     />
 
-                    <button type="submit" >Sign In</button>
+                    <button
+                        type="submit"
+                        data-test="login-btn"
+                    >
+                        Sign In
+                    </button>
                 </form>
 
                 <TextContainer>
-                    <Link to="/sign-up">
+                    <Link to="/sign-up" data-test="sign-up-link">
                         <h3>First time? Create an account!</h3>
                     </Link>
                 </TextContainer>

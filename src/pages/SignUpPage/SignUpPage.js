@@ -30,7 +30,7 @@ export default function SignUpPage() {
         }
 
         if (!form.email || !form.password || !form.username || !form.picture_url) {
-            alert ('All fields are required!')
+            alert('All fields are required!')
         }
 
         apiAuth
@@ -66,6 +66,7 @@ export default function SignUpPage() {
                         value={form.email}
                         placeholder='email'
                         onChange={handleForm}
+                        data-test="email"
                     />
 
                     <input
@@ -74,6 +75,7 @@ export default function SignUpPage() {
                         value={form.password}
                         placeholder='password'
                         onChange={handleForm}
+                        data-test="password"
                     />
 
                     <input
@@ -82,6 +84,7 @@ export default function SignUpPage() {
                         value={form.username}
                         placeholder='username'
                         onChange={handleForm}
+                        data-test="username"
                     />
 
                     <input
@@ -90,14 +93,20 @@ export default function SignUpPage() {
                         value={form.picture_url}
                         placeholder='picture url'
                         onChange={handleForm}
+                        data-test="picture-url"
                     />
 
 
-                    <button type='submit'>Sign Up</button>
+                    <button
+                        type='submit'
+                        data-test="sign-up-btn"
+                    >
+                        Sign Up
+                    </button>
                 </form>
 
                 <TextContainer>
-                    <Link to='/'>
+                    <Link to='/' data-test="login-link">
                         <h3>Switch back to log in</h3>
                     </Link>
                 </TextContainer>

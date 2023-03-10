@@ -158,31 +158,35 @@ export default function Post({ post, RefreshList }) {
                 <DeleteOptionsPopUpContainer>
                     <h1>Are you sure you want to delete this post?</h1>
                     <OptionsDeleteContainer>
-                        <h2 onClick={() => setDeletePostMode(false)}>No, go back</h2>
-                        <h3 onClick={DeletePost}>Yes,delete it</h3>
+                        <h2 onClick={() => setDeletePostMode(false)} data-test="cancel" >No, go back</h2>
+                        <h3 onClick={DeletePost} data-test="confirm" >Yes,delete it</h3>
                     </OptionsDeleteContainer>
                 </DeleteOptionsPopUpContainer>
             </DeletePostContainer>}
             <StyledBoxPostContainer>
                 <PostUserLikesContainer>
                     <ProfilePicture src={post.profile_picture} alt='' />
-                    <h6 onClick={ToggleLikePost} >{usersLikedPost.includes(user.username) ? <AiFillHeart style={{ color: 'red' }} /> : <AiOutlineHeart style={{ color: 'white' }} />}</h6>
-                    <p data-tooltip-id={post.post_id} >{likesCount} likes</p>
+                    <h6 onClick={ToggleLikePost} data-test="like-btn" >{usersLikedPost.includes(user.username) ? <AiFillHeart style={{ color: 'red' }} /> : <AiOutlineHeart style={{ color: 'white' }} />}</h6>
+                    <p data-tooltip-id={post.post_id} data-test="counter" >{likesCount} likes</p>
                 </PostUserLikesContainer>
                 <PostContentsContainer>
                     <PostOwnerContainer>
-                        <h1><Link to={`/user/${post.user_id}`}>{post.username}</Link></h1>
+                        <h1><Link to={`/user/${post.user_id}`} data-test="username" >{post.username}</Link></h1>
                         {user.id == post.user_id && <EditAndDeleteContainer>
-                            <h6 onClick={() => setEditPostMode(!editPostMode)}><TbPencil /></h6>
-                            <h6 onClick={() => setDeletePostMode(true)}><TbTrashFilled /></h6>
+                            <h6 onClick={() => setEditPostMode(!editPostMode)} data-test="edit-btn"><TbPencil /></h6>
+                            <h6 onClick={() => setDeletePostMode(true)} data-test="delete-btn"><TbTrashFilled /></h6>
                         </EditAndDeleteContainer>}
                     </PostOwnerContainer>
-                    {editPostMode ? <textarea value={messageEditable} onChange={(e) => setMessageEditable(e.target.value)} ref={inputRef}></textarea> : <h2>{postMessage}</h2>}
+                    {editPostMode ? <textarea
+                        value={messageEditable}
+                        onChange={(e) => setMessageEditable(e.target.value)}
+                        ref={inputRef}
+                        data-test="edit-input"></textarea> : <h2>{postMessage}</h2>}
                     <LinkContainer>
                         <div>
                             <h3>{postTitle}</h3>
-                            <h4>{postDescription}</h4>
-                            <a href={postUrl}><h5>{postUrl}</h5></a>
+                            <h4 data-test="description">{postDescription}</h4>
+                            <a data-test="link" href={postUrl}><h5>{postUrl}</h5></a>
                         </div>
                         <img src={postPicture} alt='' />
                     </LinkContainer>
@@ -193,6 +197,7 @@ export default function Post({ post, RefreshList }) {
                 place="bottom"
                 variant="light"
                 content={likesToolTipString}
+                data-test="tooltip" 
             />
         </>
     )

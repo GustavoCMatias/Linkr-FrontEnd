@@ -31,8 +31,8 @@ export default function HashtagPage(props) {
         <>
             {/* <Navbar userProfilePic={user.picture} /> */}
             <HashtagPageContainer>
-            <p># {hashtag}</p>
-                {posts.map( item => <Post></Post>)}
+            <p data-test="hashtag-title" ># {hashtag}</p>
+                {posts.map( item => <Post data-test="post"></Post>)}
             <HashtagsBlock></HashtagsBlock>
             </HashtagPageContainer>
         </>

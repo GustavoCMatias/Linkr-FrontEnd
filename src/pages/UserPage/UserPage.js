@@ -48,7 +48,7 @@ export default function UserPage(){
     return(
         <>
             <Navbar/>
-            <UserPageContainer>
+            <UserPageContainer data-test="post">
                 <img src={userPicture}/>
                 <p>{userName}'s posts</p>
             </UserPageContainer>

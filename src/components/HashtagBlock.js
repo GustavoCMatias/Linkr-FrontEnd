@@ -22,11 +22,11 @@ export function HashtagsBlock(){
             .catch(err => console.log(err));
     }, [])
     return(
-        <HashtagContainer>
+        <HashtagContainer data-test="trending">
             <h1>trending</h1>
             <div></div>
             <ul>
-                {hashtags.map(item => <li key={item.hashtag_name}> # {item.hashtag_name} </li>)}
+                {hashtags.map(item => <li key={item.hashtag_name} data-test="hashtag"> # {item.hashtag_name} </li>)}
             </ul>
         </HashtagContainer>
         )

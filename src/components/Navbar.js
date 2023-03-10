@@ -57,12 +57,13 @@ export default function Navbar() {
                         debounceTimeout={300}
                         value={searchName}
                         onChange={onNameSearchChange}
-                        placeholder={'Search for people'}>
+                        placeholder={'Search for people'}
+                        data-test="search" >
                     </DebounceInput>
                     {searchResults.length > 0 && <SearchResultsContainer>
                         <SearchResult></SearchResult>
                         {searchResults.map(searchElement => {
-                            return <SearchResult key={searchElement.id}>
+                            return <SearchResult key={searchElement.id} data-test="user-search">
                                 <img src={searchElement.picture} alt='' />
                                 <Link to={`/user/${searchElement.id}`}><p>{searchElement.username}</p></Link>
                             </SearchResult>
@@ -71,16 +72,17 @@ export default function Navbar() {
                 </SearchBarContainer>
                 <OptionsProfileContainer onClick={toggleLogout} logout={logout}>
                     <p><AiOutlineDown /></p>
-                    <img src={user?.picture_url} alt=''/>
+                    <img data-test="avatar" src={user?.picture_url} alt=''/>
                 </OptionsProfileContainer>
             </NavbarContainer>
 
-            <LogoutContainer logout={logout}>
+            <LogoutContainer logout={logout} data-test="menu" >
                 <button
                     onClick={logUserOut}
                     logout={logout}
                     ref={logUserOutRef}
                     className="logoutButton"
+                    data-test="logout" 
                 >Logout
                 </button>
             </LogoutContainer>
