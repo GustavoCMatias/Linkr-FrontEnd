@@ -124,3 +124,23 @@ export const PostsContainer = styled.div`
         text-align: center;
     }
 `
+
+export const LeftContainer = styled.div`
+display: flex;
+flex-direction: column;
+height: 100%;
+`
+
+export const TimelineContainer = styled.div`
+display: flex;
+flex-direction: row;
+height: 100%;
+`
+
+export const RightContainer = styled.div`
+height: 100%;
+margin-left: 25px;
+@media screen and (max-width: 600px){
+        display: none;
+    }
+`

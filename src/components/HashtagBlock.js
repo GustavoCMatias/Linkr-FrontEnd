@@ -75,10 +75,11 @@ const HashtagContainer = styled.div`
         text-align: left;
 
         color: #FFFFFF;
-        margin-bottom: 15px;
+        margin-bottom: 8px;
         margin-left: 16px;
 
     }
+
     @media (max-width: 600px ){
     display: none;
     }

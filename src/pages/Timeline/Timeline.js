@@ -2,8 +2,9 @@ import axios from 'axios';
 import { useContext, useEffect, useState } from 'react';
 import Navbar from '../../components/Navbar'
 import Post from '../../components/Post';
-import { ButtonContainer, CreatePostContainer, ProfilePicture, StyledBoxPost, StyledTitlePage, FormPostContainer, PostsContainer } from '../Timeline/TimelineCss';
+import { ButtonContainer, CreatePostContainer, ProfilePicture, StyledBoxPost, StyledTitlePage, FormPostContainer, PostsContainer, LeftContainer, TimelineContainer, RightContainer } from '../Timeline/TimelineCss';
 import { AuthContext } from '../../context/user.context';
+import { HashtagsBlock } from '../../components/HashtagBlock';
 
 export default function Timeline() {
     const [disabled, setDisabled] = useState(false);
@@ -65,53 +66,62 @@ export default function Timeline() {
         <>
             <Navbar />
             <StyledTitlePage>timeline</StyledTitlePage>
-            <StyledBoxPost>
-                <ProfilePicture src={user.picture_url} alt='' />
-                <CreatePostContainer data-test="publish-box">
-                    <h2>What are you going to share today?</h2>
-                    <FormPostContainer>
-                        <form onSubmit={createPost}>
-                            <input
-                                id='link'
-                                type='text'
-                                value={form.link}
-                                placeholder='http://...'
-                                onChange={handleForm}
-                                height={'30px'}
-                                required
-                                data-test="link"
-                            />
+            <TimelineContainer>
+                <LeftContainer>
+                    <StyledBoxPost>
+                        <ProfilePicture src={user.picture_url} alt='' />
+                        <CreatePostContainer data-test="publish-box">
+                            <h2>What are you going to share today?</h2>
+                            <FormPostContainer>
+                                <form onSubmit={createPost}>
+                                    <input
+                                        id='link'
+                                        type='text'
+                                        value={form.link}
+                                        placeholder='http://...'
+                                        onChange={handleForm}
+                                        height={'30px'}
+                                        required
+                                        data-test="link"
+                                    />
 
-                            <textarea
-                                id='description'
-                                type='textarea'
-                                value={form.description}
-                                placeholder='Awesome article about #javascript'
-                                onChange={handleForm}
-                                height={'66px'}
-                                data-test="description"
-                            />
-                            <ButtonContainer>
-                                <button
-                                    data-test="publish-btn"
-                                    type='submit' disabled={disabled}>{disabled ? 'Publishing...' : 'Publish'}
-                                </button>
-                            </ButtonContainer>
-                        </form>
-                    </FormPostContainer>
-                </CreatePostContainer>
-            </StyledBoxPost>
-            <PostsContainer data-test="post">
-                {
-                    isLoading ?
-                        <h2>Loading</h2> :
-                        postsTimeline.length == 0 ?
-                            <h2 data-test="message">There are no posts yet</h2> :
-                            postsTimeline.map(post => {
-                                return <Post key={post.post_id} post={post} RefreshList={RefreshList} />
-                            })
-                }
-            </PostsContainer>
+                                    <textarea
+                                        id='description'
+                                        type='textarea'
+                                        value={form.description}
+                                        placeholder='Awesome article about #javascript'
+                                        onChange={handleForm}
+                                        height={'66px'}
+                                        data-test="description"
+                                    />
+                                    <ButtonContainer>
+                                        <button
+                                            data-test="publish-btn"
+                                            type='submit' disabled={disabled}>{disabled ? 'Publishing...' : 'Publish'}
+                                        </button>
+                                    </ButtonContainer>
+                                </form>
+                            </FormPostContainer>
+                        </CreatePostContainer>
+                    </StyledBoxPost>
+
+
+                    <PostsContainer data-test="post">
+                        {
+                            isLoading ?
+                                <h2>Loading</h2> :
+                                postsTimeline.length == 0 ?
+                                    <h2 data-test="message">There are no posts yet</h2> :
+                                    postsTimeline.map(post => {
+                                        return <Post key={post.post_id} post={post} RefreshList={RefreshList} />
+                                    })
+                        }
+                    </PostsContainer>
+                </LeftContainer>
+                <RightContainer>
+                    <HashtagsBlock />
+                </RightContainer>
+            </TimelineContainer>
         </>
     )
 }
