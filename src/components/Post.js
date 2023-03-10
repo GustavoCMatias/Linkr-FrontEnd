@@ -16,14 +16,16 @@ export default function Post({ post, RefreshList }) {
     const [editPostMode, setEditPostMode] = useState(false);
     const [messageEditable, setMessageEditable] = useState(post.message);
     const { user, token } = useContext(AuthContext);
+    const [usersLikedPost, setUsersLikePost] = useState(post.likes.likers);
+    const [likesCount, setLikesCount] = useState(post.likes.count_likes);
     const inputRef = useRef(null);
-    const config = {
-        headers: {
-            Authorization: `Bearer ${token}`
-        }
-    }
 
     function DeletePost() {
+        const config = {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
         axios.delete(`${process.env.REACT_APP_API_URL}/timeline/${post.post_id}`, config)
             .then(res => {
                 setDeletePostMode(false);
@@ -36,18 +38,57 @@ export default function Post({ post, RefreshList }) {
     }
 
     function UpdatePost() {
-        const body ={
-            link:post.link,
-            message:messageEditable
+        const config = {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
         }
-        axios.put(`${process.env.REACT_APP_API_URL}/timeline/${post.post_id}`,body, config)
+        const body = {
+            link: post.link,
+            message: messageEditable
+        }
+        axios.put(`${process.env.REACT_APP_API_URL}/timeline/${post.post_id}`, body, config)
             .then(res => {
                 setEditPostMode(false);
                 setPostMessage(messageEditable);
-                RefreshList();
             })
-            .catch(err=>{
+            .catch(err => {
                 setEditPostMode(false);
+                console.log(err)
+            })
+    }
+
+    function ToggleLikePost() {
+        const config = {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
+        console.log(post.post_id)
+        axios.post(`${process.env.REACT_APP_API_URL}/${post.post_id}/likes`, {}, config)
+            .then(res => {
+                console.log(res)
+                switch (res.status) {
+                    case (200):
+                        setUsersLikePost([...usersLikedPost, user.username]);
+                        setLikesCount(Number(likesCount) + 1);
+                        break;
+                    case (204):
+                        setUsersLikePost(usersLikedPost.filter(u=>u!=user.username));
+                        setLikesCount(Number(likesCount) - 1)
+                        break;
+                    default:
+                        console.log('algo de errado não está certo')
+                        break;
+                }
+                if (res.status == 204) {
+
+                }
+                else if (res.status == 200) {
+
+                }
+            })
+            .catch(err => {
                 console.log(err)
             })
     }
@@ -69,6 +110,7 @@ export default function Post({ post, RefreshList }) {
 
     useEffect(() => {
         const handleEsc = (event) => {
+            console.log(messageEditable);
             if (event.keyCode === 27) {
                 setEditPostMode(false);
                 setMessageEditable(postMessage);
@@ -84,7 +126,7 @@ export default function Post({ post, RefreshList }) {
                 document.removeEventListener('keydown', handleEsc)
             }
         }
-    }, [editPostMode]);
+    }, [editPostMode,messageEditable]);
 
     return (
         <>
@@ -99,9 +141,9 @@ export default function Post({ post, RefreshList }) {
             </DeletePostContainer>}
             <StyledBoxPostContainer>
                 <PostUserLikesContainer>
-                    <ProfilePicture src="" />
-                    <h6><AiOutlineHeart /></h6>
-                    <p>{post.count_likes} likes</p>
+                    <ProfilePicture src={post.profile_picture} alt='' />
+                    <h6 onClick={ToggleLikePost} >{usersLikedPost.includes(user.username) ? <AiFillHeart style={{ color: 'red' }} /> : <AiOutlineHeart style={{ color: 'white' }} />}</h6>
+                    <p>{likesCount} likes</p>
                 </PostUserLikesContainer>
                 <PostContentsContainer>
                     <PostOwnerContainer>
@@ -111,7 +153,7 @@ export default function Post({ post, RefreshList }) {
                             <h6 onClick={() => setDeletePostMode(true)}><TbTrashFilled /></h6>
                         </EditAndDeleteContainer>}
                     </PostOwnerContainer>
-                    {editPostMode ? <textarea value={messageEditable} onChange={(e) => setMessageEditable(e.target.value)} ref={inputRef}></textarea> : <h2>{postMessage}</h2>}
+                    {editPostMode ? <textarea value={messageEditable} onChange={(e)=>setMessageEditable(e.target.value)} ref={inputRef}></textarea> : <h2>{postMessage}</h2>}
                     <LinkContainer>
                         <div>
                             <h3>{postTitle}</h3>
@@ -243,7 +285,6 @@ const PostUserLikesContainer = styled.div`
         margin-top:15px;
         height: 18px;
         width: 20px;
-        color:white;
     }
     p{
         height: 13px;
