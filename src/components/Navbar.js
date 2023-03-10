@@ -72,16 +72,17 @@ export default function Navbar() {
                 </SearchBarContainer>
                 <OptionsProfileContainer onClick={toggleLogout} logout={logout}>
                     <p><AiOutlineDown /></p>
-                    <img src={user?.picture_url} alt=''/>
+                    <img data-test="avatar" src={user?.picture_url} alt=''/>
                 </OptionsProfileContainer>
             </NavbarContainer>
 
-            <LogoutContainer logout={logout}>
+            <LogoutContainer logout={logout} data-test="menu" >
                 <button
                     onClick={logUserOut}
                     logout={logout}
                     ref={logUserOutRef}
                     className="logoutButton"
+                    data-test="logout" 
                 >Logout
                 </button>
             </LogoutContainer>
