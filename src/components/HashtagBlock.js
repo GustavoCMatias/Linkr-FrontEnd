@@ -1,6 +1,7 @@
 import React, { useEffect, useContext } from "react";
 import styled from "styled-components"
 import axios from "axios";
+import { Link } from "react-router-dom";
 import { AuthContext } from '../context/user.context';
 
 
@@ -9,7 +10,7 @@ export function HashtagsBlock(){
     const { token } = useContext(AuthContext);
     const url = process.env.REACT_APP_API_URL
     const [hashtags, setHashtags] = React.useState([])
-    
+
     useEffect(() => {
         const config = {
             headers: {
@@ -22,15 +23,21 @@ export function HashtagsBlock(){
             })
             .catch(err => console.log(err));
     }, [])
-    return(
+    return (
         <HashtagContainer data-test="trending">
             <h1>trending</h1>
             <div></div>
             <ul>
-                {hashtags.map(item => <li key={item.hashtag_name} data-test="hashtag"> # {item.hashtag_name} </li>)}
+                {hashtags.map(item => {
+                    <Link to={`/hashtag/${item.hashtag_name}`}>
+                        <li key={item.hashtag_name} data-test="hashtag">
+                            # {item.hashtag_name}
+                        </li>
+                    </Link>
+                })}
             </ul>
         </HashtagContainer>
-        )
+    )
 }
 
 const HashtagContainer = styled.div`
@@ -72,5 +79,8 @@ const HashtagContainer = styled.div`
         margin-left: 16px;
 
     }
-  
+
+    @media (max-width: 600px ){
+    display: none;
+    }
 `
