@@ -5,6 +5,8 @@ import axios from "axios";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { TbTrashFilled, TbPencil } from "react-icons/tb";
 import { AuthContext } from "../context/user.context";
+import { Link } from "react-router-dom";
+import { Tooltip as ReactTooltip } from 'react-tooltip'
 
 export default function Post({ post, RefreshList }) {
     const [postMessage, setPostMessage] = useState(post.message);
@@ -64,7 +66,6 @@ export default function Post({ post, RefreshList }) {
                 Authorization: `Bearer ${token}`
             }
         }
-        console.log(post.post_id)
         axios.post(`${process.env.REACT_APP_API_URL}/${post.post_id}/likes`, {}, config)
             .then(res => {
                 console.log(res)
@@ -74,7 +75,7 @@ export default function Post({ post, RefreshList }) {
                         setLikesCount(Number(likesCount) + 1);
                         break;
                     case (204):
-                        setUsersLikePost(usersLikedPost.filter(u=>u!=user.username));
+                        setUsersLikePost(usersLikedPost.filter(u => u != user.username));
                         setLikesCount(Number(likesCount) - 1)
                         break;
                     default:
@@ -92,6 +93,29 @@ export default function Post({ post, RefreshList }) {
                 console.log(err)
             })
     }
+
+    function likesToolTipString(){
+    switch(usersLikedPost.length){
+        case (0):
+            return 'Be the first to like this post'
+        case (1):
+            if(usersLikedPost.includes(user.username)){
+                return 'Você'
+            }
+            else return usersLikedPost[0];
+        case (2):
+            if(usersLikedPost.includes(user.username)){
+                return ('Você and ' + usersLikedPost.find(u=>u!=user.usename))
+            }
+            else return (usersLikedPost[0]+' and ' + usersLikedPost[1])
+        default:
+            const temp = usersLikedPost.filter(u=>u!=user.usename);
+            if(usersLikedPost.includes(user.username)){
+                return ('Você, ' + usersLikedPost.find(u=>u!=user.usename) + ' and other '+(likesCount-2)+' people')
+            }
+            else return (temp[0]+', ' + temp[1] + ' and other '+(likesCount-2)+' people')
+    }   
+}
 
     useEffect(() => {
         const config = {
@@ -126,7 +150,7 @@ export default function Post({ post, RefreshList }) {
                 document.removeEventListener('keydown', handleEsc)
             }
         }
-    }, [editPostMode,messageEditable]);
+    }, [editPostMode, messageEditable]);
 
     return (
         <>
@@ -143,17 +167,17 @@ export default function Post({ post, RefreshList }) {
                 <PostUserLikesContainer>
                     <ProfilePicture src={post.profile_picture} alt='' />
                     <h6 onClick={ToggleLikePost} >{usersLikedPost.includes(user.username) ? <AiFillHeart style={{ color: 'red' }} /> : <AiOutlineHeart style={{ color: 'white' }} />}</h6>
-                    <p>{likesCount} likes</p>
+                    <p data-tooltip-id={post.post_id} >{likesCount} likes</p>
                 </PostUserLikesContainer>
                 <PostContentsContainer>
                     <PostOwnerContainer>
-                        <h1>{post.username}</h1>
+                        <h1><Link to={`/user/${post.user_id}`}>{post.username}</Link></h1>
                         {user.id == post.user_id && <EditAndDeleteContainer>
                             <h6 onClick={() => setEditPostMode(!editPostMode)}><TbPencil /></h6>
                             <h6 onClick={() => setDeletePostMode(true)}><TbTrashFilled /></h6>
                         </EditAndDeleteContainer>}
                     </PostOwnerContainer>
-                    {editPostMode ? <textarea value={messageEditable} onChange={(e)=>setMessageEditable(e.target.value)} ref={inputRef}></textarea> : <h2>{postMessage}</h2>}
+                    {editPostMode ? <textarea value={messageEditable} onChange={(e) => setMessageEditable(e.target.value)} ref={inputRef}></textarea> : <h2>{postMessage}</h2>}
                     <LinkContainer>
                         <div>
                             <h3>{postTitle}</h3>
@@ -164,6 +188,12 @@ export default function Post({ post, RefreshList }) {
                     </LinkContainer>
                 </PostContentsContainer>
             </StyledBoxPostContainer>
+            <ReactTooltip
+                id={`${post.post_id}`}
+                place="bottom"
+                variant="light"
+                content={likesToolTipString}
+            />
         </>
     )
 }
@@ -301,6 +331,10 @@ const PostUserLikesContainer = styled.div`
 const PostOwnerContainer = styled.div`
     display:flex;
     justify-content:space-between;
+    a{
+        color: inherit; 
+        text-decoration: inherit;
+    }
 `
 
 const EditAndDeleteContainer = styled.div`
