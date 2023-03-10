@@ -1,18 +1,23 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components"
-import Navbar from "../../components/Navbar.js"
-import Post from "../../components/Post.js";
-import { HashtagsBlock } from "../../components/HashtagBlock.js";
+import { HashtagsBlock } from "../../components/HashtagBlock";
+import Navbar from "../../components/Navbar"
+import Post from '../../components/Post';
+import { AuthContext } from "../../context/user.context";
+import { PostsContainer } from "../Timeline/TimelineCss";
 
-export default function HashtagPage(props) {
-    const user = props | '';
+export default function UserPage() {
     const { hashtag } = useParams();
-    const token = '91461640-e721-4c63-af9b-09f666fe1805';
-    const url = 'http://localhost:5000'
+    const [postsTimeline, setPostsTimeline] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const { token, user } = useContext(AuthContext);
 
-    const [posts, setPosts] = React.useState([])
+    function RefreshList() {
+        setPostsTimeline([]);
+        setIsLoading(true);
+    }
 
     useEffect(() => {
         const config = {
@@ -20,32 +25,55 @@ export default function HashtagPage(props) {
                 "Authorization": `Bearer ${token}`
             }
         }
-        axios.get(`${url}/hashtag/${hashtag}`, config)
+
+        axios.get(`${process.env.REACT_APP_API_URL}/hashtag/${hashtag}`, config)
             .then(res => {
-                setPosts(res.data);
+                console.log(res);
+                setPostsTimeline(res.data);
+                setIsLoading(false);
             })
-            .catch(err => console.log(err));
-    }, [])
+            .catch(err => alert('An error occured while trying to fetch the posts, please refresh the page'));
+    }, [postsTimeline])
+
 
     return (
         <>
-            {/* <Navbar userProfilePic={user.picture} /> */}
-            <HashtagPageContainer>
-            <p data-test="hashtag-title" ># {hashtag}</p>
-                {posts.map( item => <Post data-test="post"></Post>)}
-            <HashtagsBlock></HashtagsBlock>
-            </HashtagPageContainer>
+            <Navbar />
+            <PostsGlobalContainer>
+                <LeftContainer>
+                    <UserPageContainer data-test="post">
+                        <p data-test="hashtag-title" ># {hashtag}</p>
+                    </UserPageContainer>
+
+                    <PostsContainer>
+                        {
+                            isLoading ?
+                                <h2>Loading</h2> :
+                                postsTimeline.length == 0 ?
+                                    <h2>There are no posts yet</h2> :
+                                    postsTimeline.map(post => {
+                                        return <Post key={post.post_id} post={post} RefreshList={RefreshList} />
+                                    })
+                        }
+                    </PostsContainer>
+                </LeftContainer>
+                <RightContainer>
+                    <HashtagsBlock />
+                </RightContainer>
+            </PostsGlobalContainer>
         </>
     )
 }
 
-const HashtagPageContainer = styled.div`
+const UserPageContainer = styled.div`
     height: 158px;
     margin:0 auto;
     margin-top:72px;
     padding:18px;
     gap:18px;
-
+    display:flex;
+    justify-content:flex-start;
+    align-items:center;
     img{
         height: 50px;
         width: 50px;
@@ -58,11 +86,30 @@ const HashtagPageContainer = styled.div`
         font-size: 43px;
         font-weight: 700;
         line-height: 64px;
-        margin-bottom: 40px;
     }
-
     @media (max-width: 768px) {
         margin-top: 100px;
     }
 `
 
+const LeftContainer = styled.div`
+display: flex;
+flex-direction: column;
+height: 100%;
+`
+
+const RightContainer = styled.div`
+display: flex;
+margin-top: 233px;
+margin-left: 25px;
+
+@media screen and (max-width: 600px){
+        display: none;
+    }
+`
+
+const PostsGlobalContainer = styled.div`
+display: flex;
+flex-direction: row;
+height: auto;
+`
