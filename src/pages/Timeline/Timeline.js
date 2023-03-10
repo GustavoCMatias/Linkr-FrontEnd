@@ -106,7 +106,7 @@ export default function Timeline() {
                     isLoading ?
                         <h2>Loading</h2> :
                         postsTimeline.length == 0 ?
-                            <h2>There are no posts yet</h2> :
+                            <h2 data-test="message">There are no posts yet</h2> :
                             postsTimeline.map(post => {
                                 return <Post key={post.post_id} post={post} RefreshList={RefreshList} />
                             })
