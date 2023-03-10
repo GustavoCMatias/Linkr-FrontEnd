@@ -3,28 +3,46 @@ import { useEffect, useState ,useContext} from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components"
 import Navbar from "../../components/Navbar"
+import Post from '../../components/Post';
 import { AuthContext } from "../../context/user.context";
+import { PostsContainer } from "../Timeline/TimelineCss";
 
 export default function UserPage(){
     const {id:userId} = useParams();
     const [userName, setUserName] = useState('');
     const [userPicture, setUserPicture] = useState('');
-    const { token } = useContext(AuthContext);
+    const [postsTimeline, setPostsTimeline] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const { token ,user} = useContext(AuthContext);
+    
+    function RefreshList(){
+        setPostsTimeline([]);
+        setIsLoading(true);
+    }
 
     useEffect(() => {
-        const config={
+        axios.get(`${process.env.REACT_APP_API_URL}/timeline/${userId}`)
+            .then(res => {
+                console.log(res);
+                setPostsTimeline(res.data);
+                setIsLoading(false);
+            })
+            .catch(err => alert('An error occured while trying to fetch the posts, please refresh the page'));
+    }, [postsTimeline])
+
+    useEffect(() => {
+        const config = {
             headers: {
-                Authorization: `Bearer ${token}`,
-              },
+                Authorization: `Bearer ${token}`
+            }
         }
-        console.log(config)
         axios.get(`${process.env.REACT_APP_API_URL}/user/${userId}`,config)
-        .then(res=>{
-            console.log(res);
-            setUserName(res.data.name);
-            setUserPicture(res.data.picture);
-        })
-        .catch(err=>console.log(err));
+            .then(res => {
+                console.log(res);
+                setUserName(res.data.username);
+                setUserPicture(res.data.picture);
+            })
+            .catch(err => console.log(err));
     }, [])
     
     return(
@@ -34,6 +52,17 @@ export default function UserPage(){
                 <img src={userPicture}/>
                 <p>{userName}'s posts</p>
             </UserPageContainer>
+            <PostsContainer>
+                {
+                    isLoading ?
+                        <h2>Loading</h2> :
+                        postsTimeline.length == 0 ?
+                            <h2>There are no posts yet</h2> :
+                            postsTimeline.map(post => {
+                                return <Post key={post.post_id} post={post} RefreshList={RefreshList}/>
+                            })
+                }
+            </PostsContainer>
         </>
     )
 }
