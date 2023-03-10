@@ -36,17 +36,17 @@ export default function Post({ post, RefreshList }) {
     }
 
     function UpdatePost() {
-        const body ={
-            link:post.link,
-            message:messageEditable
+        const body = {
+            link: post.link,
+            message: messageEditable
         }
-        axios.put(`${process.env.REACT_APP_API_URL}/timeline/${post.post_id}`,body, config)
+        axios.put(`${process.env.REACT_APP_API_URL}/timeline/${post.post_id}`, body, config)
             .then(res => {
                 setEditPostMode(false);
                 setPostMessage(messageEditable);
                 RefreshList();
             })
-            .catch(err=>{
+            .catch(err => {
                 setEditPostMode(false);
                 console.log(err)
             })
@@ -92,8 +92,8 @@ export default function Post({ post, RefreshList }) {
                 <DeleteOptionsPopUpContainer>
                     <h1>Are you sure you want to delete this post?</h1>
                     <OptionsDeleteContainer>
-                        <h2 onClick={() => setDeletePostMode(false)}>No, go back</h2>
-                        <h3 onClick={DeletePost}>Yes,delete it</h3>
+                        <h2 onClick={() => setDeletePostMode(false)} data-test="cancel" >No, go back</h2>
+                        <h3 onClick={DeletePost} data-test="confirm" >Yes,delete it</h3>
                     </OptionsDeleteContainer>
                 </DeleteOptionsPopUpContainer>
             </DeletePostContainer>}
@@ -107,11 +107,15 @@ export default function Post({ post, RefreshList }) {
                     <PostOwnerContainer>
                         <h1 data-test="username">{post.username}</h1>
                         {user.id == post.user_id && <EditAndDeleteContainer>
-                            <h6 onClick={() => setEditPostMode(!editPostMode)}><TbPencil /></h6>
-                            <h6 onClick={() => setDeletePostMode(true)}><TbTrashFilled /></h6>
+                            <h6 onClick={() => setEditPostMode(!editPostMode)} data-test="edit-btn"><TbPencil /></h6>
+                            <h6 onClick={() => setDeletePostMode(true)} data-test="delete-btn"><TbTrashFilled /></h6>
                         </EditAndDeleteContainer>}
                     </PostOwnerContainer>
-                    {editPostMode ? <textarea value={messageEditable} onChange={(e) => setMessageEditable(e.target.value)} ref={inputRef}></textarea> : <h2>{postMessage}</h2>}
+                    {editPostMode ? <textarea
+                        value={messageEditable}
+                        onChange={(e) => setMessageEditable(e.target.value)}
+                        ref={inputRef}
+                        data-test="edit-input"></textarea> : <h2>{postMessage}</h2>}
                     <LinkContainer>
                         <div>
                             <h3>{postTitle}</h3>
