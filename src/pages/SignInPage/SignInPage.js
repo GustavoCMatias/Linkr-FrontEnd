@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useContext, useState } from 'react';
 import apiAuth from '../../services/apiAuth.js';
 import { AuthContext } from '../../context/user.context.js';
+import { useEffect } from 'react';
 
 
 export default function SignInPage() {
