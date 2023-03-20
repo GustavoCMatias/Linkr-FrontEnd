@@ -8,10 +8,24 @@ import { AuthContext } from '../../context/user.context.js';
 export default function SignInPage() {
 
     const navigate = useNavigate();
-    const { keepLoggedIn } = useContext(AuthContext)
+    const { keepLoggedIn, setUser, setToken, setLoading } = useContext(AuthContext)
 
     const [form, setForm] = useState({ email: "", password: "" });
     const [disabled, setDisabled] = useState(false);
+
+    useEffect(() => {
+        const recoverUser = localStorage.getItem("user");
+        const recoverToken = localStorage.getItem("tokenUser");
+    
+        if (recoverUser && recoverToken) {
+          setUser(JSON.parse(recoverUser));
+          setToken(JSON.parse(recoverToken));
+          keepLoggedIn({ token: JSON.parse(recoverToken) });
+        }
+    
+        setLoading(false);
+      }, []);    
+    
 
     function signIn(e) {
         e.preventDefault();
