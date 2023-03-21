@@ -28,7 +28,6 @@ export default function UserPage() {
 
         axios.get(`${process.env.REACT_APP_API_URL}/hashtag/${hashtag}`, config)
             .then(res => {
-                console.log(res);
                 setPostsTimeline(res.data);
                 setIsLoading(false);
             })
