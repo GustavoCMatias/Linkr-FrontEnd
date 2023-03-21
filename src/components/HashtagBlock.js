@@ -6,7 +6,7 @@ import { AuthContext } from '../context/user.context';
 
 
 
-export function HashtagsBlock(){
+export function HashtagsBlock() {
     const { token } = useContext(AuthContext);
     const url = process.env.REACT_APP_API_URL
     const [hashtags, setHashtags] = React.useState([])
@@ -29,7 +29,7 @@ export function HashtagsBlock(){
             <div></div>
             <ul>
                 {hashtags.map(item => {
-                    <Link to={`/hashtag/${item.hashtag_name}`}>
+                    return <Link to={`/hashtag/${item.hashtag_name}`}>
                         <li key={item.hashtag_name} data-test="hashtag">
                             # {item.hashtag_name}
                         </li>
