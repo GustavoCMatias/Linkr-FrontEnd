@@ -29,10 +29,6 @@ export default function SignUpPage() {
             picture_url: form.picture_url
         }
 
-        if (!form.email || !form.password || !form.username || !form.picture_url) {
-            alert('All fields are required!')
-        }
-
         apiAuth
             .signUp(body)
             .then((res) => {
@@ -40,11 +36,15 @@ export default function SignUpPage() {
                 navigate('/');
             })
             .catch((err) => {
-                console.log(err.response.data);
+                console.log('ERRO MENSAGEM:', err.response.data);
                 if (err.response.data === 'Conflict') {
-                    alert('This account has already been created!')
+                    alert('This account is already in use')
+                };
+
+                if (!form.email || !form.password || !form.username || !form.picture_url) {
+                    alert(`atention: ${err.response.data}`)
                 }
-                setDisabled(false)
+                setDisabled(false);
             });
     }
 
