@@ -42,7 +42,7 @@ export default function SignUpPage() {
                 };
 
                 if (!form.email || !form.password || !form.username || !form.picture_url) {
-                    alert(`atention: ${err.response.data}`)
+                    alert(`atention: ${err.response.data}`);
                 }
                 setDisabled(false);
             });

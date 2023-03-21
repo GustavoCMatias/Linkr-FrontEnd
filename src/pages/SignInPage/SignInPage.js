@@ -32,10 +32,6 @@ export default function SignInPage() {
         e.preventDefault();
         setDisabled(true);
 
-        if (!form.email || !form.password) {
-            alert('All fields are required!')
-        }
-
         apiAuth
             .singIn(form)
             .then((res) => {
@@ -47,9 +43,14 @@ export default function SignInPage() {
                 console.log(err.response);
                 if (err.response.status === 401) {
                     alert('Verify your email address or password!')
-                }
-                if (err.response.status === 422) {
-                    alert('Email must be valid and valid email!')
+                };
+
+                // if (err.response.status === 422) {
+                //     alert('Email must be valid and valid email!')
+                // };
+
+                if (!form.email || !form.password) {
+                    alert(`atention: ${err.response.data}`)
                 }
                 return setDisabled(false);
             });
