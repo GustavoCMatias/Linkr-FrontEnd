@@ -3,15 +3,30 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useContext, useState } from 'react';
 import apiAuth from '../../services/apiAuth.js';
 import { AuthContext } from '../../context/user.context.js';
+import { useEffect } from 'react';
 
 
 export default function SignInPage() {
 
     const navigate = useNavigate();
-    const { keepLoggedIn } = useContext(AuthContext)
+    const { keepLoggedIn, setUser, setToken, setLoading } = useContext(AuthContext)
 
     const [form, setForm] = useState({ email: "", password: "" });
     const [disabled, setDisabled] = useState(false);
+
+    useEffect(() => {
+        const recoverUser = localStorage.getItem("user");
+        const recoverToken = localStorage.getItem("tokenUser");
+    
+        if (recoverUser && recoverToken) {
+          setUser(JSON.parse(recoverUser));
+          setToken(JSON.parse(recoverToken));
+          keepLoggedIn({ token: JSON.parse(recoverToken) });
+        }
+    
+        setLoading(false);
+      }, []);    
+    
 
     function signIn(e) {
         e.preventDefault();

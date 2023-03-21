@@ -42,18 +42,6 @@ export const AuthProvider = ({ children }) => {
     navigate("/");
   };
 
-  useEffect(() => {
-    const recoverUser = localStorage.getItem("user");
-    const recoverToken = localStorage.getItem("tokenUser");
-
-    if (recoverUser && recoverToken) {
-      setUser(JSON.parse(recoverUser));
-      setToken(JSON.parse(recoverToken));
-      keepLoggedIn({ token: JSON.parse(recoverToken) });
-    }
-
-    setLoading(false);
-  }, []);
 
   return (
     <AuthContext.Provider
@@ -64,6 +52,9 @@ export const AuthProvider = ({ children }) => {
         keepLoggedIn,
         loading,
         logUserOut,
+        setUser,
+        setToken,
+        setLoading
       }}
     >
       {children}
