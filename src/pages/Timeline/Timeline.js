@@ -5,6 +5,7 @@ import Post from '../../components/Post';
 import { ButtonContainer, CreatePostContainer, ProfilePicture, StyledBoxPost, StyledTitlePage, FormPostContainer, PostsContainer, LeftContainer, TimelineContainer, RightContainer } from '../Timeline/TimelineCss';
 import { AuthContext } from '../../context/user.context';
 import { HashtagsBlock } from '../../components/HashtagBlock';
+import useInterval from 'use-interval';
 
 export default function Timeline() {
     const [disabled, setDisabled] = useState(false);
