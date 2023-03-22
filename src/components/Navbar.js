@@ -13,13 +13,20 @@ export default function Navbar() {
     const { logUserOut } = useContext(AuthContext);
     const [logout, setLogout] = useState(false);
     const logUserOutRef = useRef();
+    const [ followingUsers,setFollowingUsers] = useState([]);
+    const {token} = useContext(AuthContext)
 
     function onNameSearchChange(e) {
+        const config = {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
         setSearchName(e.target.value);
         if (e.target.value.length < 3) { setSearchResults([]) }
-        axios.get(`${process.env.REACT_APP_API_URL}/users/${e.target.value}`)
+        axios.get(`${process.env.REACT_APP_API_URL}/users/${e.target.value}`,config)
             .then(res => {
-                setSearchResults(res.data[0]);
+                setSearchResults(res.data[0].sort((a,b)=>b.following - a.following));
             })
             .catch(err => console.log(err));
     }
@@ -66,6 +73,7 @@ export default function Navbar() {
                             return <SearchResult key={searchElement.id} data-test="user-search">
                                 <img src={searchElement.picture} alt='' />
                                 <Link to={`/user/${searchElement.id}`}><p>{searchElement.username}</p></Link>
+                                {searchElement.following&&<h3>following</h3>}
                             </SearchResult>
                         })}
                     </SearchResultsContainer>}
@@ -188,13 +196,23 @@ const SearchResult = styled.div`
     }
     p{
         height: 23px;
-        width: 115px;
+
         font-family: Lato;
         font-size: 19px;
         font-weight: 400;
         line-height: 23px;
         text-align: left;
         color: #515151;
+    }
+    h3{
+        height: 18px;
+        width: 140px;
+        font-family: Lato;
+        font-size: 19px;
+        font-weight: 400;
+        line-height: 23px;
+        text-align: left;
+        color: #C5C5C5;
     }
 `
 
