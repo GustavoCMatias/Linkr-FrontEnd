@@ -14,6 +14,7 @@ export default function UserPage() {
     const [userPicture, setUserPicture] = useState('');
     const [postsTimeline, setPostsTimeline] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [isFollowing, setIsFollowing] = useState(false);
     const { token, user } = useContext(AuthContext);
 
     function RefreshList() {
@@ -42,8 +43,9 @@ export default function UserPage() {
                 console.log(res);
                 setUserName(res.data.username);
                 setUserPicture(res.data.picture);
+                setIsFollowing(res.data.isFollowing);
             })
-            .catch(err => console.log(err));
+            .catch(err => alert('An error occured, please refresh the page'));
     }, [])
 
     return (
@@ -54,6 +56,11 @@ export default function UserPage() {
                     <UserPageContainer data-test="post">
                         <img src={userPicture} />
                         <p>{userName}'s posts</p>
+                        {userId != user.id
+                            && <FollowButton disabled={isLoading} isFollowing={isFollowing}>
+                                {isFollowing ? 'Unfollow' : 'Follow'}
+                            </FollowButton>}
+
                     </UserPageContainer>
 
                     <PostsContainer>
@@ -85,6 +92,7 @@ const UserPageContainer = styled.div`
     display:flex;
     justify-content:flex-start;
     align-items:center;
+    position: relative;
     img{
         height: 50px;
         width: 50px;
@@ -123,4 +131,19 @@ const PostsGlobalContainer = styled.div`
 display: flex;
 flex-direction: row;
 height: auto;
+`
+
+const FollowButton = styled.button`
+    position: absolute;
+    right: -408px;
+    height: 31px;
+    width: 112px;
+    border-radius: 5px;
+    color: ${props=>props.isFollowing?'#1877F2':'white'};
+    background: ${props=>props.isFollowing?'white':'#1877F2'};
+    border: none;
+    font-family: Lato;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 17px;
 `
