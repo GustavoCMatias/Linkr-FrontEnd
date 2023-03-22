@@ -12,7 +12,7 @@ export default function UserPage() {
     const { hashtag } = useParams();
     const [postsTimeline, setPostsTimeline] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-    const { token, user } = useContext(AuthContext);
+    const { token } = useContext(AuthContext);
 
     function RefreshList() {
         setPostsTimeline([]);
@@ -28,7 +28,6 @@ export default function UserPage() {
 
         axios.get(`${process.env.REACT_APP_API_URL}/hashtag/${hashtag}`, config)
             .then(res => {
-                console.log(res);
                 setPostsTimeline(res.data);
                 setIsLoading(false);
             })
@@ -102,7 +101,6 @@ const RightContainer = styled.div`
 display: flex;
 margin-top: 233px;
 margin-left: 25px;
-
 @media screen and (max-width: 600px){
         display: none;
     }
