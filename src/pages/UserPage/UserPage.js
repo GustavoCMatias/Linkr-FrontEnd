@@ -14,14 +14,12 @@ export default function UserPage() {
     const [userPicture, setUserPicture] = useState('');
     const [postsTimeline, setPostsTimeline] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [isFollowing, setIsFollowing] = useState(false);
+    const [isFollowButtonLoading, setIsFollowButtonLoading] = useState(true);
     const { token, user } = useContext(AuthContext);
 
     function RefreshList() {
-        setPostsTimeline([]);
         setIsLoading(true);
-    }
-
-    useEffect(() => {
         axios.get(`${process.env.REACT_APP_API_URL}/timeline/${userId}`)
             .then(res => {
                 console.log(res);
@@ -29,7 +27,26 @@ export default function UserPage() {
                 setIsLoading(false);
             })
             .catch(err => alert('An error occured while trying to fetch the posts, please refresh the page'));
-    }, [postsTimeline])
+    }
+
+    function ToggleFollowButton(){
+        setIsFollowButtonLoading(true);
+        const config = {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
+        axios.post(`${process.env.REACT_APP_API_URL}/user/${isFollowing?'unfollow':'follow'}`,{userId},config)
+            .then(res => {
+                console.log(res);
+                setIsFollowing(!isFollowing);
+                setIsFollowButtonLoading(false);
+            })
+            .catch(err =>{ 
+                console.log(err);
+                setIsFollowButtonLoading(false);
+            });
+    }
 
     useEffect(() => {
         const config = {
@@ -42,8 +59,14 @@ export default function UserPage() {
                 console.log(res);
                 setUserName(res.data.username);
                 setUserPicture(res.data.picture);
+                setIsFollowing(res.data.isFollowing);
+                setIsFollowButtonLoading(false);
             })
-            .catch(err => console.log(err));
+            .catch(err => alert('An error occured, please refresh the page'));
+    }, [])
+
+    useEffect(() => {
+        RefreshList();
     }, [])
 
     return (
@@ -54,6 +77,11 @@ export default function UserPage() {
                     <UserPageContainer data-test="post">
                         <img src={userPicture} />
                         <p>{userName}'s posts</p>
+                        {(userId != user.id && !isFollowButtonLoading)
+                            && <FollowButton onClick={ToggleFollowButton} disabled={isFollowButtonLoading} isFollowing={isFollowing}>
+                                {isFollowing ? 'Unfollow' : 'Follow'}
+                            </FollowButton>}
+
                     </UserPageContainer>
 
                     <PostsContainer>
@@ -78,13 +106,14 @@ export default function UserPage() {
 
 const UserPageContainer = styled.div`
     height: 158px;
-    margin:0 auto;
+    width: 611px;
     margin-top:72px;
     padding:18px;
     gap:18px;
     display:flex;
     justify-content:flex-start;
     align-items:center;
+    position: relative;
     img{
         height: 50px;
         width: 50px;
@@ -106,6 +135,7 @@ const UserPageContainer = styled.div`
 const LeftContainer = styled.div`
 display: flex;
 flex-direction: column;
+align-items:flex-start;
 height: 100%;
 `
 
@@ -123,4 +153,19 @@ const PostsGlobalContainer = styled.div`
 display: flex;
 flex-direction: row;
 height: auto;
+`
+
+const FollowButton = styled.button`
+    position: absolute;
+    right: -326px;
+    height: 31px;
+    width: 112px;
+    border-radius: 5px;
+    color: ${props=>props.isFollowing?'#1877F2':'white'};
+    background: ${props=>props.isFollowing?'white':'#1877F2'};
+    border: none;
+    font-family: Lato;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 17px;
 `
