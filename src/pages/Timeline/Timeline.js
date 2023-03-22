@@ -10,13 +10,27 @@ export default function Timeline() {
     const [disabled, setDisabled] = useState(false);
     const [postsTimeline, setPostsTimeline] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [ userFollows, setUserFollows] = useState([]);
     const { user } = useContext(AuthContext);
     const { token } = useContext(AuthContext);
 
     useEffect(() => {
+        const config = {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
+        axios.get(`${process.env.REACT_APP_API_URL}/userfollows`,config)
+            .then(res => {
+                setUserFollows(res.data)
+            })
+            .catch(err => console.log(err));
+    }, [])
+    useEffect(() => {
         axios.get(`${process.env.REACT_APP_API_URL}/timeline`)
             .then(res => {
-                setPostsTimeline(res.data);
+                const postFilterFollows = res.data.filter(post=>userFollows.some(userId=>userId.user_follow_id == post.user_id))
+                setPostsTimeline(postFilterFollows);
                 setIsLoading(false);
             })
             .catch(err => alert('An error occured while trying to fetch the posts, please refresh the page'));
@@ -111,7 +125,11 @@ export default function Timeline() {
                             isLoading ?
                                 <h2>Loading</h2> :
                                 postsTimeline.length == 0 ?
-                                    <h2 data-test="message">There are no posts yet</h2> :
+                                    <h2 data-test="message">{
+                                        userFollows.length==0?
+                                        "You don't follow anyone yet. Search for new friends!":
+                                        "No posts found from your friends"
+                                    }</h2> :
                                     postsTimeline.map(post => {
                                         return <Post key={post.post_id} post={post} RefreshList={RefreshList} />
                                     })
