@@ -6,10 +6,13 @@ import apiAuth from "../services/apiAuth";
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
+  const getUser = localStorage.getItem("user");
+  const getToken = localStorage.getItem("tokenUser");
+  const [user, setUser] = useState(JSON.parse(getUser));
+  const [token, setToken] = useState(JSON.parse(getToken));
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+
 
   function keepLoggedIn(data) {
     const { token } = data;

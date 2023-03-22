@@ -9,23 +9,16 @@ import { useEffect } from 'react';
 export default function SignInPage() {
 
     const navigate = useNavigate();
-    const { keepLoggedIn, setUser, setToken, setLoading } = useContext(AuthContext)
+    const { keepLoggedIn, token } = useContext(AuthContext)
 
     const [form, setForm] = useState({ email: "", password: "" });
     const [disabled, setDisabled] = useState(false);
 
     useEffect(() => {
-        const recoverUser = localStorage.getItem("user");
-        const recoverToken = localStorage.getItem("tokenUser");
-    
-        if (recoverUser && recoverToken) {
-          setUser(JSON.parse(recoverUser));
-          setToken(JSON.parse(recoverToken));
-          keepLoggedIn({ token: JSON.parse(recoverToken) });
-        }
-    
-        setLoading(false);
-      }, []);    
+       if (token) {
+        keepLoggedIn ({ token: token });
+       }
+      }, [token]);    
     
 
     function signIn(e) {
@@ -45,12 +38,8 @@ export default function SignInPage() {
                     alert('Verify your email address or password!')
                 };
 
-                // if (err.response.status === 422) {
-                //     alert('Email must be valid and valid email!')
-                // };
-
                 if (!form.email || !form.password) {
-                    alert(`atention: ${err.response.data}`)
+                    alert(`attention: ${err.response.data}`)
                 }
                 return setDisabled(false);
             });

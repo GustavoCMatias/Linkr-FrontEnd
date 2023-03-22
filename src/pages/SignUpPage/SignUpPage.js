@@ -36,13 +36,13 @@ export default function SignUpPage() {
                 navigate('/');
             })
             .catch((err) => {
-                console.log('ERRO MENSAGEM:', err.response.data);
+                console.log('ERROR MESSAGE:', err.response.data);
                 if (err.response.data === 'Conflict') {
                     alert('This account is already in use')
                 };
 
                 if (!form.email || !form.password || !form.username || !form.picture_url) {
-                    alert(`atention: ${err.response.data}`);
+                    alert(`attention: ${err.response.data}`);
                 }
                 setDisabled(false);
             });
