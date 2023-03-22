@@ -8,6 +8,7 @@ import { AuthContext } from "../context/user.context";
 import { Link } from "react-router-dom";
 import { Tooltip as ReactTooltip } from 'react-tooltip'
 
+
 export default function Post({ post, RefreshList }) {
     const [postMessage, setPostMessage] = useState(post.message);
     const [postTitle, setPostTitle] = useState('');
@@ -94,30 +95,31 @@ export default function Post({ post, RefreshList }) {
             })
     }
 
-    function likesToolTipString(){
-    switch(usersLikedPost.length){
-        case (0):
-            return 'Be the first to like this post'
-        case (1):
-            if(usersLikedPost.includes(user.username)){
-                return 'Você'
-            }
-            else return usersLikedPost[0];
-        case (2):
-            if(usersLikedPost.includes(user.username)){
-                return ('Você and ' + usersLikedPost.find(u=>u!=user.usename))
-            }
-            else return (usersLikedPost[0]+' and ' + usersLikedPost[1])
-        default:
-            const temp = usersLikedPost.filter(u=>u!=user.usename);
-            if(usersLikedPost.includes(user.username)){
-                return ('Você, ' + usersLikedPost.find(u=>u!=user.usename) + ' and other '+(likesCount-2)+' people')
-            }
-            else return (temp[0]+', ' + temp[1] + ' and other '+(likesCount-2)+' people')
-    }   
-}
+    function likesToolTipString() {
+        switch (usersLikedPost.length) {
+            case (0):
+                return 'Be the first to like this post'
+            case (1):
+                if (usersLikedPost.includes(user.username)) {
+                    return 'Você'
+                }
+                else return usersLikedPost[0];
+            case (2):
+                if (usersLikedPost.includes(user.username)) {
+                    return ('Você and ' + usersLikedPost.find(u => u != user.usename))
+                }
+                else return (usersLikedPost[0] + ' and ' + usersLikedPost[1])
+            default:
+                const temp = usersLikedPost.filter(u => u != user.usename);
+                if (usersLikedPost.includes(user.username)) {
+                    return ('Você, ' + usersLikedPost.find(u => u != user.usename) + ' and other ' + (likesCount - 2) + ' people')
+                }
+                else return (temp[0] + ', ' + temp[1] + ' and other ' + (likesCount - 2) + ' people')
+        }
+    }
 
     useEffect(() => {
+        console.log(post.hashtags)
         const config = {
             headers: {
                 url: post.link
@@ -181,7 +183,19 @@ export default function Post({ post, RefreshList }) {
                         value={messageEditable}
                         onChange={(e) => setMessageEditable(e.target.value)}
                         ref={inputRef}
-                        data-test="edit-input"></textarea> : <h2>{postMessage}</h2>}
+                        data-test="edit-input"></textarea> :
+                        <h2>{postMessage}
+
+                            {post.hashtags[0]===null?'':post.hashtags.map(item => {
+                                return (
+                                    <Link to={`/hashtag/${item}`}>
+                                        <PostHashtag>
+                                            &nbsp;#{item}
+                                        </PostHashtag>
+                                    </Link>)
+                                    
+                            })}
+                        </h2>}
                     <LinkContainer>
                         <div>
                             <h3>{postTitle}</h3>
@@ -197,7 +211,7 @@ export default function Post({ post, RefreshList }) {
                 place="bottom"
                 variant="light"
                 content={likesToolTipString}
-                data-test="tooltip" 
+                data-test="tooltip"
             />
         </>
     )
@@ -308,6 +322,16 @@ const LinkContainer = styled.div`
         border-top-right-radius:13px;
         border-bottom-right-radius:13px;
     }
+`
+
+const PostHashtag = styled.span`
+    font-family: Lato;
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 20px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: white;
 `
 
 const PostUserLikesContainer = styled.div`
