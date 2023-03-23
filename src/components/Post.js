@@ -250,7 +250,7 @@ export default function Post({ post, RefreshList }) {
                             <Comment>
                                 <img src={item.authorPhoto} />
                                 <div>
-                                    <h1>{item.author} </h1>
+                                    <h1>{item.author} {item.author_id === post.user_id? <span>&nbsp; • post author</span>:''}</h1>
                                     <p>{item.content}</p>
                                 </div>
 
