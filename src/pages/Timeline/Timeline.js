@@ -2,17 +2,21 @@ import axios from 'axios';
 import { useContext, useEffect, useState } from 'react';
 import Navbar from '../../components/Navbar'
 import Post from '../../components/Post';
-import { ButtonContainer, CreatePostContainer, ProfilePicture, StyledBoxPost, StyledTitlePage, FormPostContainer, PostsContainer, LeftContainer, TimelineContainer, RightContainer } from '../Timeline/TimelineCss';
+import { ButtonContainer, CreatePostContainer, ProfilePicture, StyledBoxPost, StyledTitlePage, FormPostContainer, PostsContainer, LeftContainer, TimelineContainer, RightContainer, NewPostsButton } from '../Timeline/TimelineCss';
 import { AuthContext } from '../../context/user.context';
 import { HashtagsBlock } from '../../components/HashtagBlock';
+import useInterval from 'use-interval';
+import { BiRefresh } from "react-icons/bi";
 
 export default function Timeline() {
     const [disabled, setDisabled] = useState(false);
     const [postsTimeline, setPostsTimeline] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [ userFollows, setUserFollows] = useState([]);
+    const [userFollows, setUserFollows] = useState([]);
     const { user } = useContext(AuthContext);
     const { token } = useContext(AuthContext);
+    const [standByPosts, setStandByPosts] = useState([]);
+    const [awaitingPosts, setAwaitingPosts] = useState(0);
 
     useEffect(() => {
         const config = {
@@ -20,7 +24,7 @@ export default function Timeline() {
                 Authorization: `Bearer ${token}`
             }
         }
-        axios.get(`${process.env.REACT_APP_API_URL}/userfollows`,config)
+        axios.get(`${process.env.REACT_APP_API_URL}/userfollows`, config)
             .then(res => {
                 setUserFollows(res.data)
             })
@@ -29,7 +33,7 @@ export default function Timeline() {
     useEffect(() => {
         axios.get(`${process.env.REACT_APP_API_URL}/timeline`)
             .then(res => {
-                const postFilterFollows = res.data.filter(post=>userFollows.some(userId=>userId.user_follow_id == post.user_id))
+                const postFilterFollows = res.data.filter(post => userFollows.some(userId => userId.user_follow_id == post.user_id))
                 setPostsTimeline(postFilterFollows);
                 setIsLoading(false);
             })
@@ -76,6 +80,51 @@ export default function Timeline() {
                 setDisabled(false);
             })
     }
+
+    function fetchFollowersPosts() {
+        const lastPost = postsTimeline[0] ? postsTimeline[0].post_id : 0;
+        const config = {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
+        axios.get(`${process.env.REACT_APP_API_URL}/timeline`, config)
+            .then((res) => {
+                const newPosts = res.data.filter((post) => post.post_id > lastPost);
+                if (newPosts.length !== 0) {
+                    const newStandByPosts = [...newPosts, ...postsTimeline];
+                    setStandByPosts(newStandByPosts);
+                    setAwaitingPosts(newPosts.length);
+                    const newPostTest = window.confirm ('there is a new post');
+                    if (newPostTest) {
+                        showMorePosts();
+                    }
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+                alert(
+                    "An error occured while trying to fetch new posts, please refresh the page"
+                );
+            });
+    }
+
+    function showMorePosts() {
+        setPostsTimeline(standByPosts);
+        setStandByPosts([]);
+        setAwaitingPosts(0);
+    }
+
+    useInterval(fetchFollowersPosts, 15000);
+
+    {
+        awaitingPosts > 0 && (
+            <NewPostsButton onClick={showMorePosts}>
+                {awaitingPosts} new posts, load more! <BiRefresh></BiRefresh>
+            </NewPostsButton>
+        )
+    }
+
     return (
         <>
             <Navbar />
@@ -126,9 +175,9 @@ export default function Timeline() {
                                 <h2>Loading</h2> :
                                 postsTimeline.length == 0 ?
                                     <h2 data-test="message">{
-                                        userFollows.length==0?
-                                        "You don't follow anyone yet. Search for new friends!":
-                                        "No posts found from your friends"
+                                        userFollows.length == 0 ?
+                                            "You don't follow anyone yet. Search for new friends!" :
+                                            "No posts found from your friends"
                                     }</h2> :
                                     postsTimeline.map(post => {
                                         return <Post key={post.post_id} post={post} RefreshList={RefreshList} />

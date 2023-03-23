@@ -36,7 +36,9 @@ export default function SignInPage() {
                 console.log(err.response);
                 if (err.response.status === 401) {
                     alert('Verify your email address or password!')
-                };
+                } else (
+                    alert('Something went wrong, please try again later')
+                );
 
                 if (!form.email || !form.password) {
                     alert(`attention: ${err.response.data}`)
