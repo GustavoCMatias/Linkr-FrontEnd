@@ -144,3 +144,15 @@ margin-left: 25px;
         display: none;
     }
 `
+
+export const NewPostsButton = styled.button`
+width: 611px;
+height: 61px;
+margin-top: 40px;
+border-radius: 16px;
+background-color: #1877F2;
+
+@media screen and (max-width: 600px){
+        display: none;
+    }
+`

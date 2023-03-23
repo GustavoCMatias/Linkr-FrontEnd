@@ -37,12 +37,17 @@ export default function SignUpPage() {
             })
             .catch((err) => {
                 console.log('ERROR MESSAGE:', err.response.data);
-                if (err.response.data === 'Conflict') {
+                if (err.response.status === 409) {
                     alert('This account is already in use')
-                };
+                } else if (err.response.status === 422) {
+                    alert('Something went wrong, verify your information and try again')
+                } else (
+                    alert('Something went wrong, please try again later')
+                );
 
                 if (!form.email || !form.password || !form.username || !form.picture_url) {
                     alert(`attention: ${err.response.data}`);
+                    console.log(err.response.status);
                 }
                 setDisabled(false);
             });
