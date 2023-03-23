@@ -2,7 +2,8 @@ import styled from "styled-components";
 import { ProfilePicture } from "../pages/Timeline/TimelineCss";
 import { useEffect, useState, useContext, useRef } from "react";
 import axios from "axios";
-import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
+import { AiFillHeart, AiOutlineHeart, AiOutlineComment } from "react-icons/ai";
+import { BsSend } from "react-icons/bs"
 import { TbTrashFilled, TbPencil } from "react-icons/tb";
 import { AuthContext } from "../context/user.context";
 import { Link } from "react-router-dom";
@@ -10,6 +11,8 @@ import { Tooltip as ReactTooltip } from 'react-tooltip'
 
 
 export default function Post({ post, RefreshList }) {
+    const [displayComments, setDisplayComments] = useState(false);
+    const [newComment, setNewComment] = useState('')
     const [postMessage, setPostMessage] = useState(post.message);
     const [postTitle, setPostTitle] = useState('');
     const [postDescription, setPostDescription] = useState([]);
@@ -22,6 +25,9 @@ export default function Post({ post, RefreshList }) {
     const [usersLikedPost, setUsersLikePost] = useState(post.likes.likers);
     const [likesCount, setLikesCount] = useState(post.likes.count_likes);
     const inputRef = useRef(null);
+
+    const comments = [{ nome: 'João Avatares', profile_picture: post.profile_picture, content: 'Adorei esse post, ajuda muito a usar Material UI com React!' },
+    { nome: 'João Avatares2', profile_picture: post.profile_picture, content: '2Adorei esse post, ajuda muito a usar Material UI com React!' }]
 
     function DeletePost() {
         const config = {
@@ -59,6 +65,14 @@ export default function Post({ post, RefreshList }) {
                 setEditPostMode(false);
                 console.log(err)
             })
+    }
+
+    function ToggleCommentPost() {
+        if (displayComments === false) {
+            setDisplayComments(true)
+        } else {
+            setDisplayComments(false)
+        }
     }
 
     function ToggleLikePost() {
@@ -165,11 +179,13 @@ export default function Post({ post, RefreshList }) {
                     </OptionsDeleteContainer>
                 </DeleteOptionsPopUpContainer>
             </DeletePostContainer>}
-            <StyledBoxPostContainer>
+            <StyledBoxPostContainer displayComments={displayComments}>
                 <PostUserLikesContainer>
                     <ProfilePicture src={post.profile_picture} alt='' />
                     <h6 onClick={ToggleLikePost} data-test="like-btn" >{usersLikedPost.includes(user.username) ? <AiFillHeart style={{ color: 'red' }} /> : <AiOutlineHeart style={{ color: 'white' }} />}</h6>
                     <p data-tooltip-id={post.post_id} data-test="counter" >{likesCount} likes</p>
+                    <h6 onClick={ToggleCommentPost}>{<AiOutlineComment style={{ color: 'white' }} />}</h6>
+                    <p>{likesCount} comments</p>
                 </PostUserLikesContainer>
                 <PostContentsContainer>
                     <PostOwnerContainer>
@@ -186,14 +202,14 @@ export default function Post({ post, RefreshList }) {
                         data-test="edit-input"></textarea> :
                         <h2>{postMessage}
 
-                            {post.hashtags[0]===null?'':post.hashtags.map(item => {
+                            {post.hashtags[0] === null ? '' : post.hashtags.map(item => {
                                 return (
                                     <Link to={`/hashtag/${item}`}>
                                         <PostHashtag>
-                                            &nbsp;#{item}
+                                            &nbsp;#{item}&nbsp;
                                         </PostHashtag>
                                     </Link>)
-                                    
+
                             })}
                         </h2>}
                     <LinkContainer>
@@ -206,6 +222,37 @@ export default function Post({ post, RefreshList }) {
                     </LinkContainer>
                 </PostContentsContainer>
             </StyledBoxPostContainer>
+            <StyledBoxCommentContainer displayComments={displayComments}>
+                {comments.map(item => {
+                    return (
+                        <>
+                            <Comment>
+                                <img src={item.profile_picture} />
+                                <div>
+                                    <h1>{item.nome}</h1>
+                                    <p>{item.content}</p>
+                                </div>
+
+
+                            </Comment>
+                            <SeparationLine></SeparationLine>
+                        </>)
+                })}
+
+                <Comment>
+                    <img src={user.profile_url} />
+                    <textarea
+                        type="textarea"
+                        placeholder="write a comment..."
+                        value={newComment}
+                        onChange={(e) => setNewComment(e.target.value)}>
+                        
+                    </textarea>
+                    <h6 onClick={() => (alert(newComment))}>{<BsSend style={{ color: 'white' }} />}</h6>
+                </Comment>
+
+
+            </StyledBoxCommentContainer>
             <ReactTooltip
                 id={`${post.post_id}`}
                 place="bottom"
@@ -213,6 +260,7 @@ export default function Post({ post, RefreshList }) {
                 content={likesToolTipString}
                 data-test="tooltip"
             />
+
         </>
     )
 }
@@ -220,7 +268,7 @@ export default function Post({ post, RefreshList }) {
 const StyledBoxPostContainer = styled.div`
     height: 276px;
     width: 611px;
-    margin-bottom:16px;
+    margin-bottom: ${props => props.displayComments ? '0px' : '16px'};
     padding:16px;
     gap:5px 18px;
     border-radius: 16px;
@@ -229,9 +277,17 @@ const StyledBoxPostContainer = styled.div`
     background-color: #171717;
     filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
 `
+const StyledBoxCommentContainer = styled.div`
+    background-color: #1E1E1E;
+    border-radius: 16px;
+    width:611px;
+    min-height: 93px;
+    margin-bottom: 16px;
+    display: ${props => props.displayComments ? '' : 'none'};
+`
 const PostContentsContainer = styled.div`
     height:237px;
-    width:502px;;
+    width:502px;
     gap:7px;
     h1{
         height: 23px;
@@ -347,7 +403,7 @@ const PostUserLikesContainer = styled.div`
     }
     p{
         height: 13px;
-        width: 50px;
+        width: 60px;
         font-family: Lato;
         font-size: 11px;
         font-weight: 400;
@@ -439,4 +495,80 @@ const OptionsDeleteContainer = styled.div`
         color: #FFFFFF;
         text-align:center;
     }
+`
+
+const Comment = styled.div`
+    display: flex;
+    padding: 15px 5px 0px 25px;
+    position: relative;
+    img{
+        height: 39px;
+        width: 39px;
+        border-radius: 20px;
+
+        margin-right: 18px;
+        margin-bottom: 15px;
+    }
+    h1{
+        font-family: Lato;
+        font-size: 14px;
+        font-weight: 700;
+        line-height: 17px;
+        letter-spacing: 0em;
+        text-align: left;
+        color: #F3F3F3;
+        margin-bottom: 2px;
+
+    }
+    p{
+        font-family: Lato;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 17px;
+        letter-spacing: 0em;
+        text-align: left;
+        color: #ACACAC;
+        margin-bottom: 5px;
+
+    }
+
+    input{
+        background-color: #252525;
+        height: 39px;
+        width: 510px;
+        min-height: 23px;
+        border-radius: 8px;
+        border: none;
+        color: #575757;
+        
+        padding: 11px 45px 11px 15px;
+    }
+
+    textarea{
+        background-color: #252525;
+        height: 39px;
+        width: 510px;
+        min-height: 23px;
+        border-radius: 8px;
+        color: #575757;
+        
+        padding: 11px 45px 11px 15px;
+
+        position: relative;
+
+        resize:none;
+        overflow:hidden;
+    }
+
+    h6{
+        position: absolute;
+        bottom: 22px;
+        right: 35px;
+    }
+`
+
+const SeparationLine = styled.div`
+    border: 1px solid #353535;
+    width: 571px;
+    margin: auto;
 `
