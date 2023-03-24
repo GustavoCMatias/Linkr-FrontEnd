@@ -38,8 +38,8 @@ export default function Timeline() {
         }
         axios.get(`${process.env.REACT_APP_API_URL}/timeline`, config)
             .then(res => {
-                const postFilterFollows = res.data.filter(post => userFollows.some(userId => userId.user_follow_id == post.user_id))
-                setPostsTimeline(postFilterFollows);
+                //const postFilterFollows = res.data.filter(post => userFollows.some(userId => userId.user_follow_id == post.user_id))
+                setPostsTimeline(res.data);
                 setIsLoading(false);
             })
             .catch(err => alert('An error occured while trying to fetch the posts, please refresh the page'));

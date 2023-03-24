@@ -53,6 +53,7 @@ export default function UserPage() {
     }
 
     useEffect(() => {
+        setIsFollowButtonLoading(true);
         const config = {
             headers: {
                 Authorization: `Bearer ${token}`
