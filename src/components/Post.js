@@ -20,7 +20,7 @@ export default function Post({ post, RefreshList }) {
     const [postUrl, setPostUrl] = useState('');
     const [postPicture, setPostPicture] = useState('');
     const [deletePostMode, setDeletePostMode] = useState(false);
-    const [repostPromptMode,setRepostPromptMode] = useState(false);
+    const [repostPromptMode, setRepostPromptMode] = useState(false);
     const [editPostMode, setEditPostMode] = useState(false);
     const [messageEditable, setMessageEditable] = useState(post.message);
     const { user, token } = useContext(AuthContext);
@@ -28,6 +28,8 @@ export default function Post({ post, RefreshList }) {
     const [likesCount, setLikesCount] = useState(post.likes.count_likes);
     const [commentsCount, setCommentsCount] = useState(post.comments.count_comments);
     const [comments, setComments] = useState(post.comments.comments);
+    const [repostCount, setRepostCount] = useState(post.reposts.count_reposts);
+    const [repostUsers, setRepostUsers] = useState(post.reposts.users);
     const inputRef = useRef(null);
 
     function DeletePost() {
@@ -110,18 +112,20 @@ export default function Post({ post, RefreshList }) {
             })
     }
 
-    function PostRepost(){
+    function PostRepost() {
         const config = {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         }
-        axios.post(`${process.env.REACT_APP_API_URL}/repost`, {post_id: post.post_id}, config)
+        axios.post(`${process.env.REACT_APP_API_URL}/repost`, { post_id: post.post_id }, config)
             .then(res => {
                 setRepostPromptMode(false);
+                setRepostCount(repostCount + 1);
             })
-            .catch(err=>{
-                console.log(err);
+            .catch(err => {
+                alert('You already posted it')
+                setRepostPromptMode(false);
             })
     }
 
@@ -148,7 +152,7 @@ export default function Post({ post, RefreshList }) {
         }
     }
 
-    function postComment(){
+    function postComment() {
         const config = {
             headers: {
                 Authorization: `Bearer ${token}`
@@ -161,7 +165,7 @@ export default function Post({ post, RefreshList }) {
         axios.post(`${process.env.REACT_APP_API_URL}/comment`, body, config)
             .then(res => {
                 setCommentsCount(Number(commentsCount) + 1)
-                setComments([{authorPhoto: user.picture_url, author: user.username, content: newComment}, ...comments])
+                setComments([{ authorPhoto: user.picture_url, author: user.username, content: newComment }, ...comments])
                 setNewComment('')
             })
             .catch(err => {
@@ -184,8 +188,8 @@ export default function Post({ post, RefreshList }) {
                 setPostUrl(res.data.url);
                 if (res.data.image) setPostPicture(res.data.image[0]);
             })
-            .catch(err=>{
-                console.log('problema no link metadata do post: ',post.post_id)
+            .catch(err => {
+                console.log('problema no link metadata do post: ', post.link,post)
             })
     }, [])
 
@@ -229,15 +233,26 @@ export default function Post({ post, RefreshList }) {
                     </OptionsDeleteContainer>
                 </DeleteOptionsPopUpContainer>
             </DeletePostContainer>}
+            {
+                repostUsers.length > 0 &&
+                <InvisibleContainer>
+                    <RepostContainer>
+
+                        <h6 >{<BiRepost />}</h6>
+                        <h1>Re-posted by {repostUsers.includes(user.username)?'you':repostUsers[0]}</h1>
+                    </RepostContainer>
+                </InvisibleContainer>
+            }
             <StyledBoxPostContainer displayComments={displayComments}>
+
                 <PostUserLikesContainer>
                     <ProfilePicture src={post.profile_picture} alt='' />
                     <h6 onClick={ToggleLikePost} data-test="like-btn" >{usersLikedPost.includes(user.username) ? <AiFillHeart style={{ color: 'red' }} /> : <AiOutlineHeart style={{ color: 'white' }} />}</h6>
                     <p data-tooltip-id={post.post_id} data-test="counter" >{likesCount} likes</p>
                     <h6 onClick={ToggleCommentPost}>{<AiOutlineComment style={{ color: 'white' }} />}</h6>
                     <p>{commentsCount} comments</p>
-                    <h6 onClick={()=>setRepostPromptMode(true)}>{<BiRepost style={{ color: 'white' }} />}</h6>
-                    <p>{likesCount} re-posts</p>
+                    <h6 onClick={() => setRepostPromptMode(true)}>{<BiRepost style={{ color: 'white' }} />}</h6>
+                    <p>{repostCount} re-posts</p>
                 </PostUserLikesContainer>
                 <PostContentsContainer>
                     <PostOwnerContainer>
@@ -276,12 +291,12 @@ export default function Post({ post, RefreshList }) {
             </StyledBoxPostContainer>
             <StyledBoxCommentContainer displayComments={displayComments}>
                 {comments.map(item => {
-                    return item.content === null?'':(
+                    return item.content === null ? '' : (
                         <>
-                            <Comment key = {item.id}>
+                            <Comment key={item.id}>
                                 <img src={item.authorPhoto} />
                                 <div>
-                                    <h1>{item.author} {item.author_id === post.user_id? <span>&nbsp; • post author</span>:''} {item.user_follows && item.author_id !== post.user_id?<span>&nbsp; • following</span>:''}</h1>
+                                    <h1>{item.author} {item.author_id === post.user_id ? <span>&nbsp; • post author</span> : ''} {item.user_follows && item.author_id !== post.user_id ? <span>&nbsp; • following</span> : ''}</h1>
                                     <p>{item.content}</p>
                                 </div>
 
@@ -298,7 +313,7 @@ export default function Post({ post, RefreshList }) {
                         placeholder="write a comment..."
                         value={newComment}
                         onChange={(e) => setNewComment(e.target.value)}>
-                        
+
                     </textarea>
                     <h6 onClick={postComment}>{<BsSend style={{ color: 'white' }} />}</h6>
                 </Comment>
@@ -318,7 +333,7 @@ export default function Post({ post, RefreshList }) {
 }
 
 const StyledBoxPostContainer = styled.div`
-    height: 276px;
+   
     width: 611px;
     margin-bottom: ${props => props.displayComments ? '0px' : '16px'};
     padding:16px;
@@ -634,4 +649,32 @@ const SeparationLine = styled.div`
     border: 1px solid #353535;
     width: 571px;
     margin: auto;
+`
+const RepostContainer = styled.div`
+    height: 45px;
+    width: 611px;
+    border-top-right-radius: 16px;
+    border-top-left-radius: 16px;
+    background: #1E1E1E;
+    display:flex;
+    align-items:flex-start;
+    padding:5px 13px;
+    gap:6px;
+    position:absolute;
+    h1{
+        font-family: Lato;
+        font-size: 11px;
+        font-weight: 700;
+        line-height: 24px;
+        color: #FFFFFF;
+    }
+    h6{
+        color:white;
+        font-size:24px;
+    }
+`
+const InvisibleContainer = styled.div`
+    height: 33px;
+    width: 611px;
+    position:relative;
 `
