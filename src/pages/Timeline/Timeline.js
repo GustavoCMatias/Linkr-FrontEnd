@@ -116,7 +116,7 @@ export default function Timeline() {
         setAwaitingPosts(0);
     }
 
-    useInterval(fetchFollowersPosts, 15000);
+    useInterval(fetchFollowersPosts, 50000);
 
     {
         awaitingPosts > 0 && (
