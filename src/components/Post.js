@@ -247,10 +247,10 @@ export default function Post({ post, RefreshList }) {
                 {comments.map(item => {
                     return item.content === null?'':(
                         <>
-                            <Comment>
+                            <Comment key = {item.id}>
                                 <img src={item.authorPhoto} />
                                 <div>
-                                    <h1>{item.author} {item.author_id === post.user_id? <span>&nbsp; • post author</span>:''}</h1>
+                                    <h1>{item.author} {item.author_id === post.user_id? <span>&nbsp; • post author</span>:''} {item.user_follows && item.author_id !== post.user_id?<span>&nbsp; • following</span>:''}</h1>
                                     <p>{item.content}</p>
                                 </div>
 
