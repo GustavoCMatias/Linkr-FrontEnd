@@ -26,10 +26,9 @@ export default function Post({ post, RefreshList }) {
     const { user, token } = useContext(AuthContext);
     const [usersLikedPost, setUsersLikePost] = useState(post.likes.likers);
     const [likesCount, setLikesCount] = useState(post.likes.count_likes);
+    const [commentsCount, setCommentsCount] = useState(post.comments.count_comments);
+    const [comments, setComments] = useState(post.comments.comments);
     const inputRef = useRef(null);
-
-    const comments = [{ nome: 'João Avatares', profile_picture: post.profile_picture, content: 'Adorei esse post, ajuda muito a usar Material UI com React!' },
-    { nome: 'João Avatares2', profile_picture: post.profile_picture, content: '2Adorei esse post, ajuda muito a usar Material UI com React!' }]
 
     function DeletePost() {
         const config = {
@@ -149,8 +148,30 @@ export default function Post({ post, RefreshList }) {
         }
     }
 
+    function postComment(){
+        const config = {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
+        const body = {
+            content: newComment,
+            post_id: post.post_id
+        }
+        axios.post(`${process.env.REACT_APP_API_URL}/comment`, body, config)
+            .then(res => {
+                setCommentsCount(Number(commentsCount) + 1)
+                setComments([{authorPhoto: user.picture_url, author: user.username, content: newComment}, ...comments])
+                setNewComment('')
+            })
+            .catch(err => {
+                // setDeletePostMode(false);
+                console.log(err)
+                alert('It was not possible to create this comment');
+            })
+    }
+
     useEffect(() => {
-        console.log(post.hashtags)
         const config = {
             headers: {
                 url: post.link
@@ -214,7 +235,7 @@ export default function Post({ post, RefreshList }) {
                     <h6 onClick={ToggleLikePost} data-test="like-btn" >{usersLikedPost.includes(user.username) ? <AiFillHeart style={{ color: 'red' }} /> : <AiOutlineHeart style={{ color: 'white' }} />}</h6>
                     <p data-tooltip-id={post.post_id} data-test="counter" >{likesCount} likes</p>
                     <h6 onClick={ToggleCommentPost}>{<AiOutlineComment style={{ color: 'white' }} />}</h6>
-                    <p>{likesCount} comments</p>
+                    <p>{commentsCount} comments</p>
                     <h6 onClick={()=>setRepostPromptMode(true)}>{<BiRepost style={{ color: 'white' }} />}</h6>
                     <p>{likesCount} re-posts</p>
                 </PostUserLikesContainer>
@@ -255,12 +276,12 @@ export default function Post({ post, RefreshList }) {
             </StyledBoxPostContainer>
             <StyledBoxCommentContainer displayComments={displayComments}>
                 {comments.map(item => {
-                    return (
+                    return item.content === null?'':(
                         <>
                             <Comment>
-                                <img src={item.profile_picture} />
+                                <img src={item.authorPhoto} />
                                 <div>
-                                    <h1>{item.nome}</h1>
+                                    <h1>{item.author} {item.author_id === post.user_id? <span>&nbsp; • post author</span>:''}</h1>
                                     <p>{item.content}</p>
                                 </div>
 
@@ -271,7 +292,7 @@ export default function Post({ post, RefreshList }) {
                 })}
 
                 <Comment>
-                    <img src={user.profile_url} />
+                    <img src={user.picture_url} />
                     <textarea
                         type="textarea"
                         placeholder="write a comment..."
@@ -279,7 +300,7 @@ export default function Post({ post, RefreshList }) {
                         onChange={(e) => setNewComment(e.target.value)}>
                         
                     </textarea>
-                    <h6 onClick={() => (alert(newComment))}>{<BsSend style={{ color: 'white' }} />}</h6>
+                    <h6 onClick={postComment}>{<BsSend style={{ color: 'white' }} />}</h6>
                 </Comment>
 
 
@@ -312,7 +333,7 @@ const StyledBoxCommentContainer = styled.div`
     background-color: #1E1E1E;
     border-radius: 16px;
     width:611px;
-    min-height: 93px;
+    min-height: 70px;
     margin-bottom: 16px;
     display: ${props => props.displayComments ? '' : 'none'};
 `
@@ -581,7 +602,7 @@ const Comment = styled.div`
         width: 510px;
         min-height: 23px;
         border-radius: 8px;
-        color: #575757;
+        color: #ACACAC;
         
         padding: 11px 45px 11px 15px;
 
@@ -595,6 +616,17 @@ const Comment = styled.div`
         position: absolute;
         bottom: 22px;
         right: 35px;
+    }
+
+    span{
+        font-family: Lato;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 17px;
+        letter-spacing: 0em;
+        text-align: left;
+        color: #565656;
+
     }
 `
 
