@@ -31,7 +31,12 @@ export default function Timeline() {
             .catch(err => console.log(err));
     }, [])
     useEffect(() => {
-        axios.get(`${process.env.REACT_APP_API_URL}/timeline`)
+        const config = {
+            params: {
+                requester_id: user.id
+            }        
+        }
+        axios.get(`${process.env.REACT_APP_API_URL}/timeline`, config)
             .then(res => {
                 //const postFilterFollows = res.data.filter(post => userFollows.some(userId => userId.user_follow_id == post.user_id))
                 setPostsTimeline(res.data);
