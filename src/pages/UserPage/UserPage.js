@@ -20,9 +20,13 @@ export default function UserPage() {
 
     function RefreshList() {
         setIsLoading(true);
-        axios.get(`${process.env.REACT_APP_API_URL}/timeline/${userId}`)
+        const config = {
+            params: {
+                requester_id: user.id
+            }        
+        }
+        axios.get(`${process.env.REACT_APP_API_URL}/timeline/${userId}`, config)
             .then(res => {
-                console.log(res);
                 setPostsTimeline(res.data);
                 setIsLoading(false);
             })
@@ -49,6 +53,7 @@ export default function UserPage() {
     }
 
     useEffect(() => {
+        setIsFollowButtonLoading(true);
         const config = {
             headers: {
                 Authorization: `Bearer ${token}`
