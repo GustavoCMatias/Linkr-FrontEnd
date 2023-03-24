@@ -36,9 +36,8 @@ export default function Timeline() {
                 requester_id: user.id
             }        
         }
-        axios.get(`${process.env.REACT_APP_API_URL}/timeline`, config)
+        axios.get(`${process.env.REACT_APP_API_URL}/timeline/?userId=${user.id}`, config)
             .then(res => {
-                //const postFilterFollows = res.data.filter(post => userFollows.some(userId => userId.user_follow_id == post.user_id))
                 setPostsTimeline(res.data);
                 setIsLoading(false);
             })
