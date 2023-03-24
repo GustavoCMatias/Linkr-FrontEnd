@@ -4,6 +4,7 @@ import { useEffect, useState, useContext, useRef } from "react";
 import axios from "axios";
 import { AiFillHeart, AiOutlineHeart, AiOutlineComment } from "react-icons/ai";
 import { BsSend } from "react-icons/bs"
+import { BiRepost } from "react-icons/bi";
 import { TbTrashFilled, TbPencil } from "react-icons/tb";
 import { AuthContext } from "../context/user.context";
 import { Link } from "react-router-dom";
@@ -19,6 +20,7 @@ export default function Post({ post, RefreshList }) {
     const [postUrl, setPostUrl] = useState('');
     const [postPicture, setPostPicture] = useState('');
     const [deletePostMode, setDeletePostMode] = useState(false);
+    const [repostPromptMode,setRepostPromptMode] = useState(false);
     const [editPostMode, setEditPostMode] = useState(false);
     const [messageEditable, setMessageEditable] = useState(post.message);
     const { user, token } = useContext(AuthContext);
@@ -109,6 +111,21 @@ export default function Post({ post, RefreshList }) {
             })
     }
 
+    function PostRepost(){
+        const config = {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
+        axios.post(`${process.env.REACT_APP_API_URL}/repost`, {post_id: post.post_id}, config)
+            .then(res => {
+                setRepostPromptMode(false);
+            })
+            .catch(err=>{
+                console.log(err);
+            })
+    }
+
     function likesToolTipString() {
         switch (usersLikedPost.length) {
             case (0):
@@ -179,6 +196,15 @@ export default function Post({ post, RefreshList }) {
                     </OptionsDeleteContainer>
                 </DeleteOptionsPopUpContainer>
             </DeletePostContainer>}
+            {repostPromptMode && <DeletePostContainer>
+                <DeleteOptionsPopUpContainer>
+                    <h1>Do you want to re-post this link?</h1>
+                    <OptionsDeleteContainer>
+                        <h2 onClick={() => setRepostPromptMode(false)} >No, cancel</h2>
+                        <h3 onClick={PostRepost} >Yes, share!</h3>
+                    </OptionsDeleteContainer>
+                </DeleteOptionsPopUpContainer>
+            </DeletePostContainer>}
             <StyledBoxPostContainer displayComments={displayComments}>
                 <PostUserLikesContainer>
                     <ProfilePicture src={post.profile_picture} alt='' />
@@ -186,6 +212,8 @@ export default function Post({ post, RefreshList }) {
                     <p data-tooltip-id={post.post_id} data-test="counter" >{likesCount} likes</p>
                     <h6 onClick={ToggleCommentPost}>{<AiOutlineComment style={{ color: 'white' }} />}</h6>
                     <p>{likesCount} comments</p>
+                    <h6 onClick={()=>setRepostPromptMode(true)}>{<BiRepost style={{ color: 'white' }} />}</h6>
+                    <p>{likesCount} re-posts</p>
                 </PostUserLikesContainer>
                 <PostContentsContainer>
                     <PostOwnerContainer>
