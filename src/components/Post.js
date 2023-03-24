@@ -163,6 +163,9 @@ export default function Post({ post, RefreshList }) {
                 setPostUrl(res.data.url);
                 if (res.data.image) setPostPicture(res.data.image[0]);
             })
+            .catch(err=>{
+                console.log('problema no link metadata do post: ',post.post_id)
+            })
     }, [])
 
     useEffect(() => {
