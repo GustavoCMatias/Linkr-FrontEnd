@@ -83,7 +83,7 @@ export default function UserPage() {
                         <img src={userPicture} />
                         <p>{userName}'s posts</p>
                         {(userId != user.id && !isFollowButtonLoading)
-                            && <FollowButton onClick={ToggleFollowButton} disabled={isFollowButtonLoading} isFollowing={isFollowing}>
+                            && <FollowButton data-test="follow-btn" onClick={ToggleFollowButton} disabled={isFollowButtonLoading} isFollowing={isFollowing}>
                                 {isFollowing ? 'Unfollow' : 'Follow'}
                             </FollowButton>}
 

@@ -189,7 +189,7 @@ export default function Post({ post, RefreshList }) {
                 if (res.data.image) setPostPicture(res.data.image[0]);
             })
             .catch(err => {
-                console.log('problema no link metadata do post: ', post.link,post)
+                console.log('problema no link metadata do post: ', post.link, post)
             })
     }, [])
 
@@ -228,8 +228,8 @@ export default function Post({ post, RefreshList }) {
                 <DeleteOptionsPopUpContainer>
                     <h1>Do you want to re-post this link?</h1>
                     <OptionsDeleteContainer>
-                        <h2 onClick={() => setRepostPromptMode(false)} >No, cancel</h2>
-                        <h3 onClick={PostRepost} >Yes, share!</h3>
+                        <h2 onClick={() => setRepostPromptMode(false)} data-test="cancel">No, cancel</h2>
+                        <h3 onClick={PostRepost} data-test="confirm" >Yes, share!</h3>
                     </OptionsDeleteContainer>
                 </DeleteOptionsPopUpContainer>
             </DeletePostContainer>}
@@ -239,7 +239,7 @@ export default function Post({ post, RefreshList }) {
                     <RepostContainer>
 
                         <h6 >{<BiRepost />}</h6>
-                        <h1>Re-posted by {repostUsers.includes(user.username)?'you':repostUsers[0]}</h1>
+                        <h1>Re-posted by {repostUsers.includes(user.username) ? 'you' : repostUsers[0]}</h1>
                     </RepostContainer>
                 </InvisibleContainer>
             }
@@ -249,10 +249,10 @@ export default function Post({ post, RefreshList }) {
                     <ProfilePicture src={post.profile_picture} alt='' />
                     <h6 onClick={ToggleLikePost} data-test="like-btn" >{usersLikedPost.includes(user.username) ? <AiFillHeart style={{ color: 'red' }} /> : <AiOutlineHeart style={{ color: 'white' }} />}</h6>
                     <p data-tooltip-id={post.post_id} data-test="counter" >{likesCount} likes</p>
-                    <h6 onClick={ToggleCommentPost}>{<AiOutlineComment style={{ color: 'white' }} />}</h6>
-                    <p>{commentsCount} comments</p>
-                    <h6 onClick={() => setRepostPromptMode(true)}>{<BiRepost style={{ color: 'white' }} />}</h6>
-                    <p>{repostCount} re-posts</p>
+                    <h6 onClick={ToggleCommentPost} data-test="comment-btn">{<AiOutlineComment style={{ color: 'white' }} />}</h6>
+                    <p data-test="comment-counter">{commentsCount} comments</p>
+                    <h6 onClick={() => setRepostPromptMode(true)} data-test="repost-btn">{<BiRepost style={{ color: 'white' }} />}</h6>
+                    <p data-test="repost-counter">{repostCount} re-posts</p>
                 </PostUserLikesContainer>
                 <PostContentsContainer>
                     <PostOwnerContainer>
@@ -293,7 +293,7 @@ export default function Post({ post, RefreshList }) {
                 {comments.map(item => {
                     return item.content === null ? '' : (
                         <>
-                            <Comment key={item.id}>
+                            <Comment key={item.id} data-test="comment">
                                 <img src={item.authorPhoto} />
                                 <div>
                                     <h1>{item.author} {item.author_id === post.user_id ? <span>&nbsp; • post author</span> : ''} {item.user_follows && item.author_id !== post.user_id ? <span>&nbsp; • following</span> : ''}</h1>
@@ -312,10 +312,11 @@ export default function Post({ post, RefreshList }) {
                         type="textarea"
                         placeholder="write a comment..."
                         value={newComment}
-                        onChange={(e) => setNewComment(e.target.value)}>
+                        onChange={(e) => setNewComment(e.target.value)}
+                        data-test="comment-input">
 
                     </textarea>
-                    <h6 onClick={postComment}>{<BsSend style={{ color: 'white' }} />}</h6>
+                    <h6 onClick={postComment} data-test="comment-submit">{<BsSend style={{ color: 'white' }} />}</h6>
                 </Comment>
 
 
