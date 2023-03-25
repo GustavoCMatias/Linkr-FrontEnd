@@ -80,6 +80,7 @@ export default function Timeline() {
                 setPostsTimeline(postsTimeline);
             })
             .catch(err => {
+                console.log('ERRO POST', err);
                 alert("There was an error publishing your link");
                 setDisabled(false);
             })
