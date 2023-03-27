@@ -33,6 +33,7 @@ export default function SignUpPage() {
             .signUp(body)
             .then((res) => {
                 console.log(res.data);
+                setDisabled(false);
                 navigate('/');
             })
             .catch((err) => {
@@ -45,10 +46,10 @@ export default function SignUpPage() {
                     alert('Something went wrong, please try again later')
                 );
 
-                if (!form.email || !form.password || !form.username || !form.picture_url) {
+                /* if (!form.email || !form.password || !form.username || !form.picture_url) {
                     alert(`attention: ${err.response.data}`);
                     console.log(err.response.status);
-                }
+                } */
                 setDisabled(false);
             });
     }
@@ -72,6 +73,7 @@ export default function SignUpPage() {
                         placeholder='email'
                         onChange={handleForm}
                         data-test="email"
+                        required
                     />
 
                     <input
@@ -81,6 +83,7 @@ export default function SignUpPage() {
                         placeholder='password'
                         onChange={handleForm}
                         data-test="password"
+                        required
                     />
 
                     <input
@@ -90,6 +93,7 @@ export default function SignUpPage() {
                         placeholder='username'
                         onChange={handleForm}
                         data-test="username"
+                        required
                     />
 
                     <input
@@ -99,12 +103,14 @@ export default function SignUpPage() {
                         placeholder='picture url'
                         onChange={handleForm}
                         data-test="picture-url"
+                        required
                     />
 
 
                     <button
                         type='submit'
                         data-test="sign-up-btn"
+                        disabled={disabled}
                     >
                         Sign Up
                     </button>
