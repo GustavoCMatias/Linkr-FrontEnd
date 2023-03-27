@@ -289,7 +289,7 @@ export default function Post({ post, RefreshList }) {
                     </LinkContainer>
                 </PostContentsContainer>
             </StyledBoxPostContainer>
-            <StyledBoxCommentContainer displayComments={displayComments}>
+            <StyledBoxCommentContainer displayComments={displayComments} data-test="comment-box">
                 {comments.map(item => {
                     return item.content === null ? '' : (
                         <>
