@@ -30,11 +30,12 @@ export default function Timeline() {
             })
             .catch(err => console.log(err));
     }, [])
+
     useEffect(() => {
         const config = {
             params: {
                 requester_id: user.id
-            }        
+            }
         }
         axios.get(`${process.env.REACT_APP_API_URL}/timeline/?userId=${user.id}`, config)
             .then(res => {
@@ -42,7 +43,7 @@ export default function Timeline() {
                 setIsLoading(false);
             })
             .catch(err => alert('An error occured while trying to fetch the posts, please refresh the page'));
-    }, [postsTimeline])
+    }, [])
 
     const [form, setForm] = useState({
         link: '',
@@ -80,6 +81,7 @@ export default function Timeline() {
                 setPostsTimeline(postsTimeline);
             })
             .catch(err => {
+                console.log('ERRO POST', err);
                 alert("There was an error publishing your link");
                 setDisabled(false);
             })
@@ -87,22 +89,20 @@ export default function Timeline() {
 
     function fetchFollowersPosts() {
         const lastPost = postsTimeline[0] ? postsTimeline[0].post_id : 0;
+        console.log('lastPost:', lastPost);
         const config = {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         }
-        axios.get(`${process.env.REACT_APP_API_URL}/timeline`, config)
+        axios.get(`${process.env.REACT_APP_API_URL}/timeline/?userId=${user.id}`, config)
             .then((res) => {
                 const newPosts = res.data.filter((post) => post.post_id > lastPost);
+
                 if (newPosts.length !== 0) {
                     const newStandByPosts = [...newPosts, ...postsTimeline];
                     setStandByPosts(newStandByPosts);
                     setAwaitingPosts(newPosts.length);
-                    const newPostTest = window.confirm ('there is a new post');
-                    if (newPostTest) {
-                        showMorePosts();
-                    }
                 }
             })
             .catch((error) => {
@@ -114,12 +114,11 @@ export default function Timeline() {
     }
 
     function showMorePosts() {
-        setPostsTimeline(standByPosts);
-        setStandByPosts([]);
         setAwaitingPosts(0);
+        setPostsTimeline(standByPosts);
     }
 
-    useInterval(fetchFollowersPosts, 15000);
+    useInterval(fetchFollowersPosts, 3000);
 
     {
         awaitingPosts > 0 && (
@@ -172,6 +171,9 @@ export default function Timeline() {
                         </CreatePostContainer>
                     </StyledBoxPost>
 
+                    {
+                        awaitingPosts > 0 && (<NewPostsButton onClick={showMorePosts}> {awaitingPosts} new posts, load more! </NewPostsButton>)
+                    }
 
                     <PostsContainer data-test="post">
                         {
