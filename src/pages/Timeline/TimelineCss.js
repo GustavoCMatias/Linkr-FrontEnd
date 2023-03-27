@@ -149,10 +149,19 @@ export const NewPostsButton = styled.button`
 width: 611px;
 height: 61px;
 margin-top: 40px;
+margin-bottom: 17px;
 border-radius: 16px;
 background-color: #1877F2;
+font-family: 'Lato';
+font-style: normal;
+font-weight: 400;
+font-size: 16px;
+line-height: 19px;
+border-style: none;
+color: #fff;
 
 @media screen and (max-width: 600px){
-        display: none;
+        width: 100%;
+        border-radius: 0px;
     }
 `
