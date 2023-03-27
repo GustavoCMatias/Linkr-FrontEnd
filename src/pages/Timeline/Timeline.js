@@ -7,6 +7,7 @@ import { AuthContext } from '../../context/user.context';
 import { HashtagsBlock } from '../../components/HashtagBlock';
 import useInterval from 'use-interval';
 import { BiRefresh } from "react-icons/bi";
+import InfiniteScroll from 'react-infinite-scroller';
 
 export default function Timeline() {
     const [disabled, setDisabled] = useState(false);
@@ -17,6 +18,7 @@ export default function Timeline() {
     const { token } = useContext(AuthContext);
     const [standByPosts, setStandByPosts] = useState([]);
     const [awaitingPosts, setAwaitingPosts] = useState(0);
+    const [hasMore, setHasMore] = useState(true);
 
     useEffect(() => {
         const config = {
@@ -128,6 +130,31 @@ export default function Timeline() {
         )
     }
 
+    function loadOlderPosts() {
+        const lastPost = postsTimeline[postsTimeline.length - 1].post_id;
+        const config = {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
+        axios.get(`${process.env.REACT_APP_API_URL}/timeline/?userId=${user.id}&offset=${lastPost}`, config)
+          .then((res) => {
+            const newPosts = res.data.filter((post) => post.post_id < lastPost);
+            if (newPosts.length === 0) {
+              setHasMore(false);
+            } else {
+              const newPostsList = [...postsTimeline, ...newPosts];
+              setPostsTimeline(newPostsList);
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+            alert(
+              "An error occured while trying to fetch older posts, please refresh the page"
+            );
+          });
+      }
+
     return (
         <>
             <Navbar />
@@ -185,9 +212,21 @@ export default function Timeline() {
                                             "You don't follow anyone yet. Search for new friends!" :
                                             "No posts found from your friends"
                                     }</h2> :
-                                    postsTimeline.map(post => {
-                                        return <Post key={post.post_id} post={post} RefreshList={RefreshList} />
-                                    })
+                                    <InfiniteScroll
+                                        pageStart={0}
+                                        loadMore={loadOlderPosts}
+                                        hasMore={hasMore}
+                                        loader={
+                                            <div className="loader" key={0}>
+                                                Loading ...
+                                            </div>
+                                        }
+                                    >
+
+                                        {postsTimeline.map(post => {
+                                            return <Post key={post.post_id} post={post} RefreshList={RefreshList} />
+                                        })}
+                                    </InfiniteScroll>
                         }
                     </PostsContainer>
                 </LeftContainer>
