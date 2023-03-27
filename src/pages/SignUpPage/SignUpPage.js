@@ -32,12 +32,12 @@ export default function SignUpPage() {
         apiAuth
             .signUp(body)
             .then((res) => {
-                console.log(res.data);
                 setDisabled(false);
-                navigate('/');
+                navigate("/");
             })
             .catch((err) => {
                 console.log('ERROR MESSAGE:', err.response.data);
+                setDisabled(false);
                 if (err.response.status === 409) {
                     alert('This account is already in use')
                 } else if (err.response.status === 422) {
@@ -50,7 +50,6 @@ export default function SignUpPage() {
                     alert(`attention: ${err.response.data}`);
                     console.log(err.response.status);
                 } */
-                setDisabled(false);
             });
     }
 
