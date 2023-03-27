@@ -30,6 +30,7 @@ export default function Timeline() {
             })
             .catch(err => console.log(err));
     }, [])
+
     useEffect(() => {
         const config = {
             params: {
@@ -42,7 +43,7 @@ export default function Timeline() {
                 setIsLoading(false);
             })
             .catch(err => alert('An error occured while trying to fetch the posts, please refresh the page'));
-    }, [postsTimeline])
+    }, [])
 
     const [form, setForm] = useState({
         link: '',
@@ -96,20 +97,12 @@ export default function Timeline() {
         }
         axios.get(`${process.env.REACT_APP_API_URL}/timeline/?userId=${user.id}`, config)
             .then((res) => {
-                //console.log('res.data do get 2', res.data);
-                //const postFilterFollows = res.data.filter(post => userFollows.some(userId => userId.user_follow_id == post.user_id));
-                //console.log('postFilterFollows:', postFilterFollows);
                 const newPosts = res.data.filter((post) => post.post_id > lastPost);
-                console.log('newPosts:', newPosts);
-                if (newPosts.length !== 0) {
 
+                if (newPosts.length !== 0) {
                     const newStandByPosts = [...newPosts, ...postsTimeline];
                     setStandByPosts(newStandByPosts);
                     setAwaitingPosts(newPosts.length);
-                    const newPostTest = window.confirm('there is a new post');
-                    if (newPostTest) {
-                        showMorePosts();
-                    }
                 }
             })
             .catch((error) => {
@@ -121,12 +114,11 @@ export default function Timeline() {
     }
 
     function showMorePosts() {
-        setPostsTimeline(standByPosts);
-        setStandByPosts([]);
         setAwaitingPosts(0);
+        setPostsTimeline(standByPosts);
     }
 
-    useInterval(fetchFollowersPosts, 30000);
+    useInterval(fetchFollowersPosts, 3000);
 
     {
         awaitingPosts > 0 && (
@@ -179,6 +171,9 @@ export default function Timeline() {
                         </CreatePostContainer>
                     </StyledBoxPost>
 
+                    {
+                        awaitingPosts > 0 && (<NewPostsButton onClick={showMorePosts}> {awaitingPosts} new posts, load more! </NewPostsButton>)
+                    }
 
                     <PostsContainer data-test="post">
                         {
@@ -191,14 +186,7 @@ export default function Timeline() {
                                             "No posts found from your friends"
                                     }</h2> :
                                     postsTimeline.map(post => {
-                                        return (
-                                            <>
-                                                <NewPostsButton>
-                                                    {awaitingPosts} new posts, load more!
-                                                </NewPostsButton>
-                                                <Post key={post.post_id} post={post} RefreshList={RefreshList} />
-                                            </>
-                                        )
+                                        return <Post key={post.post_id} post={post} RefreshList={RefreshList} />
                                     })
                         }
                     </PostsContainer>
