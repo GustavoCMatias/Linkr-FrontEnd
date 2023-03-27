@@ -34,7 +34,7 @@ export default function Timeline() {
         const config = {
             params: {
                 requester_id: user.id
-            }        
+            }
         }
         axios.get(`${process.env.REACT_APP_API_URL}/timeline/?userId=${user.id}`, config)
             .then(res => {
@@ -88,20 +88,25 @@ export default function Timeline() {
 
     function fetchFollowersPosts() {
         const lastPost = postsTimeline[0] ? postsTimeline[0].post_id : 0;
+        console.log('lastPost:', lastPost);
         const config = {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         }
-        axios.get(`${process.env.REACT_APP_API_URL}/timeline`, config)
+        axios.get(`${process.env.REACT_APP_API_URL}/timeline/?userId=${user.id}`, config)
             .then((res) => {
-                const postFilterFollows = res.data.filter(post => userFollows.some(userId => userId.user_follow_id == post.user_id));
-                const newPosts = postFilterFollows.filter((post) => post.post_id > lastPost);
+                //console.log('res.data do get 2', res.data);
+                //const postFilterFollows = res.data.filter(post => userFollows.some(userId => userId.user_follow_id == post.user_id));
+                //console.log('postFilterFollows:', postFilterFollows);
+                const newPosts = res.data.filter((post) => post.post_id > lastPost);
+                console.log('newPosts:', newPosts);
                 if (newPosts.length !== 0) {
+
                     const newStandByPosts = [...newPosts, ...postsTimeline];
                     setStandByPosts(newStandByPosts);
                     setAwaitingPosts(newPosts.length);
-                    const newPostTest = window.confirm ('there is a new post');
+                    const newPostTest = window.confirm('there is a new post');
                     if (newPostTest) {
                         showMorePosts();
                     }
@@ -121,7 +126,7 @@ export default function Timeline() {
         setAwaitingPosts(0);
     }
 
-    useInterval(fetchFollowersPosts, 50000);
+    useInterval(fetchFollowersPosts, 30000);
 
     {
         awaitingPosts > 0 && (
@@ -186,7 +191,14 @@ export default function Timeline() {
                                             "No posts found from your friends"
                                     }</h2> :
                                     postsTimeline.map(post => {
-                                        return <Post key={post.post_id} post={post} RefreshList={RefreshList} />
+                                        return (
+                                            <>
+                                                <NewPostsButton>
+                                                    {awaitingPosts} new posts, load more!
+                                                </NewPostsButton>
+                                                <Post key={post.post_id} post={post} RefreshList={RefreshList} />
+                                            </>
+                                        )
                                     })
                         }
                     </PostsContainer>
