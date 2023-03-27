@@ -199,7 +199,7 @@ export default function Timeline() {
                     </StyledBoxPost>
 
                     {
-                        awaitingPosts > 0 && (<NewPostsButton onClick={showMorePosts}> {awaitingPosts} new posts, load more! </NewPostsButton>)
+                        awaitingPosts > 0 && (<NewPostsButton onClick={showMorePosts} data-test="load-btn"> {awaitingPosts} new posts, load more! </NewPostsButton>)
                     }
 
                     <PostsContainer data-test="post">
